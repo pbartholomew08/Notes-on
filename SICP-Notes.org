@@ -330,7 +330,131 @@ Assume that the sequence is to be evaluated in the order in which it is presente
 : NIL
 
 #+BEGIN_SRC lisp
-(if (and (> b a) (< b (* a b)))
-    b
-    a)
+(if (and (> *b* *a*) (< *b* (* *a* *b*)))
+    *b*
+    *a*)
 #+END_SRC
+
+#+RESULTS:
+: 4
+
+#+BEGIN_SRC lisp
+(* (cond ((> *a* *b*) *a*)
+         ((< *a* *b*) *b*)
+         (t -1))
+   (+ *a* 1))
+#+END_SRC
+
+#+RESULTS:
+: 16
+
+**** Exercise 1.2
+
+Translate the following expression into prefix form
+\begin{equation}
+\frac{5 + \frac{1}{2} + \left( 2 - \left( 3 - \left( 6 + \frac{4}{5} \right) \right) \right)}{3
+\left( 6 - 2 \right) \left( 2 - 7 \right)}
+\end{equation}
+
+#+BEGIN_SRC lisp
+  (/ (+ 5 (/ 1 2) (- 2 3 (+ 6 (/ 4 5))))
+     (* 3 (- 6 2) (- 2 7)))
+#+END_SRC
+
+#+RESULTS:
+: 23/600
+
+**** Exercise 1.3
+
+Define a procedure that takes three numbers as arguments and returns the sum of the squares of the
+two larger numbers.
+
+#+BEGIN_SRC lisp
+  (defun sq (x)
+    "Squares x."
+    (* x x))
+
+  (defun sicp-1.3 (a b c)
+    "Returns the sum of the square of the larger two numbers of a, b and c."
+    (+ (sq (max a b c))
+       (sq (- (+ a b c)
+              (max a b c)
+              (min a b c)))))
+
+  ;; Test the operation of sicp-1.3
+  (sicp-1.3 1 2 3)
+#+END_SRC
+
+#+RESULTS:
+: 13
+
+**** Exercise 1.4
+
+Observe that our model of evaluation allows for combinations whose operators are compound
+expressions.
+Use this observation to describe the behaviour of the following procedure:
+#+BEGIN_SRC scheme
+  (defun (a-plus-abs-b a b)
+    ((if (> b 0) + -) a b))
+#+END_SRC
+
+Translated into =Common LISP=:
+#+BEGIN_SRC lisp
+  (defun a-plus-abs-b (a b)
+    (funcall (if (> b 0) #'+ #'-)
+             a b))
+
+  ;; Test a-plus-abs-b
+  (= (a-plus-abs-b 1 1)
+     (a-plus-abs-b 1 -1))
+#+END_SRC
+
+#+RESULTS:
+: T
+
+The conditional ~(if (> b 0) #'+ #'-)~ returns the function ~+~ or ~-~ depending on the predicate.
+The call ~(funcall #'f a b)~ then calls the returned function with the arguments ~a~ and ~b~.
+
+**** Exercise 1.5
+
+Ben Bitdiddle has invented a test to determine whether the interpreter he is faced with is using
+applicative-order evaluation or normal-order evaluation.
+He defines the following two procedures:
+#+BEGIN_SRC scheme 
+  (define (p)
+    (p))
+
+  (define (test x y)
+    (if (= x 0)
+        0
+        y))
+#+END_SRC
+
+Then he evaluates the expression ~(test 0 (p))~.
+
+What behaviour will Ben observe with an interpreter that uses applicative-order evaluation?
+What behaviour will he observe with an interpreter that uses normal-order evaluation?
+Explain your answer.
+(Assume that the evaluation rule for the special form ~if~ is the same whether the interpreter is
+using normal- or applicative-order: The predicate expression is evaluated first, and the result
+determines whether to evaluate the consequent or the alternative expression.)
+
+Translated into =Common LISP=:
+#+BEGIN_SRC lisp :evaluate never
+  (defun p ()
+    (funcall #'p))
+
+  (defun test-1.5 (x y)
+    (if (= x 0)
+        0
+        y))
+
+  (test-1.3 0 (p))
+#+END_SRC
+
+Using applicative-order the arguments are evaluated before the method is applied.
+As a result, calling ~(test-1.5 0 (p))~ leads to ~(p)~ being evaluated, resulting in an infinite
+recursion before the body of ~test-1.5~ is even entered.
+Normal-order first expands the method before evaluating the arguments.
+Due to the evaluation rule of ~if~ being that only the expression resulting from the predicate being
+true/false is evaluated, ~(p)~ is never called in normal-order, hence no infinite recursion occurs.
