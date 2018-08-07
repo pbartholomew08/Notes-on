@@ -1,3 +1,0 @@
-#+TITLE: SICP Notes
-#+AUTHOR: Paul Bartholomew
-

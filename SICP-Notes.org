@@ -1,0 +1,336 @@
+#+TITLE: SICP Notes
+#+AUTHOR: Paul Bartholomew
+
+These notes are my work-through of Structure and Interpretation of Computer Programs
+(=SICP=)[fn:sch-cl].
+
+[fn:sch-cl]*N.B.* though =SICP= is written in =Scheme=, I will be using =Common LISP=.
+
+* Local variables                                                  :noexport:
+# Local Variables:
+# org-confirm-babel-evaluate: nil
+# End:
+
+* Building Abstractions with Procedures
+
+** The Elements of Programming
+
+A programming language can be seen as a tool to express complex ideas based on building up *primitive
+expressions* into compound expressions by *combination* and *abstracting* these by naming them and
+manipulating these named units.
+These elements can be further broken down into two categories: *data*, /i.e./ `stuff'; and *procedures*,
+the rules for manipulating `stuff'.
+
+*** Expressions
+
+Perhaps the most primitive expression is a number, /e.g./ entering =10= in a =REPL= will return ~10~.
+Combining these primitives with primitive procedures such as ~+~ or ~*~ results in a /compound expression/
+for example:
+#+BEGIN_SRC lisp
+(+ 137 349)
+#+END_SRC
+
+#+RESULTS:
+: 486
+These compound expressions are referred to as /combinations/ and take the form: ~(operator operand1
+operand2 ... operandn)~, returning the value of applying the procedure defined by the operator to
+the /arguments/ that are the values of the operands.
+
+*** Naming and the Environment
+
+In order to abstract ideas, it must be possible to associate a name with an object: the name
+identifies a /variable/ whose /value/ is the object.
+Here arises one of the differences between =Scheme= and =Common LISP=: =Scheme= is a =LISP-1= having only
+one namespace so the same operator ~define~ suffices to create variables and operators whereas =Common
+LISP= is a =LISP-2= with separate namespaces for operators and variables, created by ~defun~ and ~defvar~
+respectively, for example contrast =Scheme=
+#+BEGIN_SRC scheme
+(define pi 3.14159)
+(define radius 10)
+(* pi (* radius radius))
+#+END_SRC
+with =Common LISP= [fn:lisp-convention]
+#+BEGIN_SRC lisp
+(defconstant +PI+ 3.14159)
+(defvar *radius* 10)
+(* +PI+ (* *radius* *radius*))
+#+END_SRC
+
+#+RESULTS:
+: 314.159
+The ability to abstract compound operations is key to the utility of a programming language, allowing
+complex programs to be constructed as a series of computational objects of increasing complexity.
+This approach is facilitated by the =REPL= allowing incremental development and
+testing.[fn:lisp-simpleprocs]
+Maintaining these =symbol->value= associations requires some form of memory, known as the /environment/
+(specifically the /global environment/ for these top-level forms).
+
+[fn:lisp-convention] By convention, top-level /variables/ are identified by ~*~ /e.g./ ~*radius*~ while a
+/constant/ such as \pi would be defined as ~(defconstant +PI+ 3.14159)~ where ~+~ represents constants by
+convention.
+[fn:lisp-simpleprocs] As a consequence of interactive/incremental development, =LISP= programs usually
+consist of a large number of relatively simple procedures.
+
+*** Evaluating Combinations
+
+As an example procedure, consider that when the interpreter evaluates a combination, it is itself
+following a procedure:
+1. Evaluate the subexpressions of the combination.
+2. Apply the procedure that is he value of the leftmost subexpression (the operator) to the arguments
+  that are the values of the other subexpressions (the operands).
+
+The above procedure is /recursive/, it calls itself as one of the steps.
+Recursion is very powerful, allowing what would, in the case of deeply nested combinations, to be
+expressed in a comparatively clear manner.
+For example, evaluating
+#+BEGIN_SRC lisp
+(* (+ 2 (* 4 6))
+   (+ 3 5 7))
+#+END_SRC
+
+#+RESULTS:
+=390
+=requires that the evaluation rule be applied to four different combinations.
+This process can be visualised in the form of a tree /fig./ [[fig:evaluation-tree]] where each leaf
+represents a combination with branches to its operator and operands stemming from it with terminal
+nodes represent either operators or values.
+To evaluate a node, apply the operator coming from its left branch to the operands coming from each
+other branch, essentially information travels upwards from the terminal nodes[fn:tree-accumulation].
+
+#+CAPTION: Tree representation of evaluation rule.
+#+NAME: fig:evaluation-tree
+#+ATTR_LATEX: :width 0.65\textwidth
+[[./SICP1/figures/evaluation-tree.png]]
+
+So, as can be seen, each node is evaluated by recursively applying the evaluation rule to each
+branch until a terminal node is reached at which point its value is applied/operated upon.
+
+[fn:tree-accumulation] This evaluation rule is an example of /tree accumulation/.
+
+*** Compound Procedures
+
+In the previous section primitive data and procedures were introduced by way of numbers and
+arithmetic operations, nesting of which allows operations to be combined and by defining variables,
+a limited form of abstraction.
+For example, in computing the circumference of a circle, the radius must be squared.
+More useful than writing out ~(* r r)~ whenever this is necessary would be to express the idea of
+/squaring/ as /to multiply something by itself/.
+In =Scheme= this is expressed as
+#+BEGIN_SRC scheme
+(define (square x)
+  (* x x))
+#+END_SRC
+or, equivalently in =Common LISP= as
+#+BEGIN_SRC lisp
+(defun square (x)
+  (* x x))
+#+END_SRC
+
+#+RESULTS:
+: SQUARE
+
+here we can see the difference between =Scheme= as a =LISP-1= and =Common LISP= as a =LISP-2=, we need to
+tell =Common LISP= the name ~square~ is a function object, not a variable, whereas this distinction
+does not exist in =Scheme=.
+
+To analyse ~square~ it can be seen that something ~x~ is passed to the function and it multiplied by
+itself is returned.
+Naturally ~square~ can be used to build more complex expressions, for example, $x^2+y^2$ can be
+expressed as
+#+BEGIN_SRC lisp
+(+ (square x) (square y))
+#+END_SRC
+or better still:
+#+BEGIN_SRC lisp
+(defun sum-of-squares (x y)
+  (+ (square x) (square y)))
+
+(sum-of-squares 3 4)
+#+END_SRC
+
+#+RESULTS:
+: 25
+and so forth.
+
+*** The Substitution Model for Procedure Application
+
+As a model for how the interpreter operates, consider the function ~f~:
+#+BEGIN_SRC lisp
+(defun f (a)
+  (sum-of-squares (+ a 1)
+                  (* a 2)))
+#+END_SRC
+To evaluate such a compound procedure, the substitution model evaluates the body of the procedure
+with each parameter replaced by the corresponding argument.
+For example, ~(f 5)~ would be evaluated by first retrieving the body of ~f~:
+#+BEGIN_SRC lisp
+(sum-of-squares (+ a 1) (* a 2))
+#+END_SRC
+and replacing the parameter ~a~ by the argument ~5~:
+#+BEGIN_SRC lisp
+(sum-of-squares (+ 5 1) (* 5 2))
+#+END_SRC
+yielding three subproblems: ~(+ 5 1)~, ~(* 5 2)~ and the application of ~sum-of-squares~ to the results.
+Evaluating ~(+ 5 1)~ and ~(* 5 2)~ and substituting into the body of ~sum-of-squares~ reduces the
+expression to
+#+BEGIN_SRC lisp
+(+ (square 6) (square 10))
+#+END_SRC
+With the definition of ~square~:
+#+BEGIN_SRC lisp
+(+ (* 6 6) (* 10 10))
+#+END_SRC
+which reduces to:
+#+BEGIN_SRC lisp 
+(+ 36 100)
+#+END_SRC
+
+#+RESULTS:
+: 136
+which, as it is composed of only primitive operations and variables can be evaluated to yield ~136~.
+
+It is important to note that the substitution model /is a model/:
+- It is not how a typical interpreter would evaluate the procedure by manipulating the text as
+  outlined above.
+- Over the course of this, a sequence of increasingly elaborate models of how interpreters work will
+  be explored, culminating with a complete implementation of an interpreter and compiler in chapter
+  5 - the substitution model serves only as a first simplified model.
+
+**** Applicative Order Versus Normal Order
+
+Based on the description of the evaluation tree /fig/. [[fig:evaluation-tree]] the interpreter first
+evaluates the operator and operands, then applies the resulting procedure to the resulting
+arguments.
+An alternative would be to /not/ evaluate the operands until their values are needed, instead the
+interpreter would substitute operand expressions for parameters until an expression consisting of
+solely primitive expressions is obtained which can then be evaluated.
+Thus ~(f 5)~ would first be expanded as:
+#+BEGIN_SRC lisp
+(sum-of-squares (+ 5 1) (* 5 2))
+(+ (square (+ 5 1)) (square (* 5 2)))
+(+ (* (+ 5 1) (+ 5 1)) (* (* 5 2) (* 5 2)))
+#+END_SRC
+which then reduces to
+#+BEGIN_SRC lisp :export both
+(+ (* 6 6) (* 10 10))
+(+ 36 100)
+#+END_SRC
+
+#+RESULTS:
+: 136
+
+The result is the same as the previous model of evaluation but results in a different process: in
+particular, ~(+ 5 1)~ and ~(* 5 2)~ are evaluated twice.
+
+This /fully expand then reduce/ evaluation method is known as /normal-order evaluation/ as opposed to
+the /evaluate arguments and then apply/ method that the =Scheme= interpreter actually
+uses[fn:lisp-order?], called /applicative-order evaluation/.
+It can be shown that for procedure applications that can be modelled using substitution and yield
+legitimate values, normal-order and applicative-order evaluation produce the same value - this is
+not necessarily true in the case of an /illegitimate/ value where the two will not produce the same
+result.
+
+[fn:lisp-order?] =Common LISP= uses
+
+*** Conditional Expressions and Predicates
+
+In order to make a test and perform different operations depending on the tests result, some form of
+conditional expression is required.
+In =LISP= this is achieved by the ~cond~ form, for example, the absolute value of a number could be
+expressed as
+#+BEGIN_SRC lisp
+(defun sicp-abs-1 (x)
+  (cond ((> x 0) x)
+        ((< x 0) (- x))
+        (t 0)))
+#+END_SRC
+it takes the form: ~(cond (<p1> <e1>) (<p2> <e2>) ... (<pn> <en>))~ where each clause ~(<pn> <en>)~
+consists of a /predicate/, /i.e./ an expression returning true or false, and an expression which is
+evaluated only if the predicate is true.
+Evaluation falls down the clauses until a predicate evaluating as ~true~ is found, its corresponding
+expression is then returned as the value of the conditional expression.
+Of course, the absolute value procedure could be reduced to a single test by noting that the
+absolute value of any real number greater than or equal to zero is itself and itself negated
+otherwise:
+#+BEGIN_SRC lisp
+(defun sicp-abs-2 (x)
+  (if (< x 0)
+      (- x)
+      x))
+#+END_SRC
+where ~(if <pred> <then> <else>)~ is a special form of ~cond~ where the ~then~ expression is returned if
+the predicate is ~true~ or the ~else~ expression if the predicate is ~false~.
+
+**** Exercise 1.1
+
+Below is a sequence of expressions.
+What is the result printed by the interpreter in response to each expression?
+Assume that the sequence is to be evaluated in the order in which it is presented.
+#+BEGIN_SRC lisp
+10 
+#+END_SRC
+
+#+RESULTS:
+: 10
+
+#+BEGIN_SRC lisp
+(+ 5 3 4)
+#+END_SRC
+
+#+RESULTS:
+: 12
+
+#+BEGIN_SRC lisp
+(- 9 1)
+#+END_SRC
+
+#+RESULTS:
+: 8
+
+#+BEGIN_SRC lisp
+(/ 6 2)
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+#+BEGIN_SRC lisp
+(+ (* 2 4) (- 4 6))
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+#+BEGIN_SRC lisp
+(defvar *a* 3)
+#+END_SRC
+
+#+RESULTS:
+: *A*
+
+#+BEGIN_SRC lisp
+(defvar *b* (+ *a* 1))
+#+END_SRC
+
+#+RESULTS:
+: *B*
+
+#+BEGIN_SRC lisp
+(+ *a* *b* (* *a* *b*))
+#+END_SRC
+
+#+RESULTS:
+: 19
+
+#+BEGIN_SRC lisp
+(= *a* *b*)
+#+END_SRC
+
+#+RESULTS:
+: NIL
+
+#+BEGIN_SRC lisp
+(if (and (> b a) (< b (* a b)))
+    b
+    a)
+#+END_SRC
