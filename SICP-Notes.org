@@ -1,3 +1,5 @@
+# -*- mode: org; org-confirm-babel-evaluate: nil -*-
+
 #+TITLE: SICP Notes
 #+AUTHOR: Paul Bartholomew
 
@@ -5,11 +7,6 @@ These notes are my work-through of Structure and Interpretation of Computer Prog
 (=SICP=)[fn:sch-cl].
 
 [fn:sch-cl]*N.B.* though =SICP= is written in =Scheme=, I will be using =Common LISP=.
-
-* Local variables                                                  :noexport:
-# Local Variables:
-# org-confirm-babel-evaluate: nil
-# End:
 
 * Building Abstractions with Procedures
 
@@ -27,7 +24,7 @@ Perhaps the most primitive expression is a number, /e.g./ entering =10= in a =RE
 Combining these primitives with primitive procedures such as ~+~ or ~*~ results in a /compound expression/
 for example:
 #+BEGIN_SRC lisp
-(+ 137 349)
+  (+ 137 349)
 #+END_SRC
 
 #+RESULTS:
@@ -84,13 +81,14 @@ Recursion is very powerful, allowing what would, in the case of deeply nested co
 expressed in a comparatively clear manner.
 For example, evaluating
 #+BEGIN_SRC lisp
-(* (+ 2 (* 4 6))
-   (+ 3 5 7))
+  (* (+ 2 (* 4 6))
+     (+ 3 5 7))
 #+END_SRC
 
 #+RESULTS:
-=390
-=requires that the evaluation rule be applied to four different combinations.
+: 390
+
+requires that the evaluation rule be applied to four different combinations.
 This process can be visualised in the form of a tree /fig./ [[fig:evaluation-tree]] where each leaf
 represents a combination with branches to its operator and operands stemming from it with terminal
 nodes represent either operators or values.
@@ -117,16 +115,17 @@ More useful than writing out ~(* r r)~ whenever this is necessary would be to ex
 /squaring/ as /to multiply something by itself/.
 In =Scheme= this is expressed as
 #+BEGIN_SRC scheme
-(define (square x)
-  (* x x))
+  (define (square x)
+    (* x x))
 #+END_SRC
 or, equivalently in =Common LISP= as
+#+NAME: square
 #+BEGIN_SRC lisp
-(defun square (x)
-  (* x x))
+  (defun square (x)
+    (* x x))
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: square
 : SQUARE
 
 here we can see the difference between =Scheme= as a =LISP-1= and =Common LISP= as a =LISP-2=, we need to
@@ -137,11 +136,13 @@ To analyse ~square~ it can be seen that something ~x~ is passed to the function 
 itself is returned.
 Naturally ~square~ can be used to build more complex expressions, for example, $x^2+y^2$ can be
 expressed as
-#+BEGIN_SRC lisp
+#+BEGIN_SRC lisp :noweb strip-export
+<<square>>
 (+ (square x) (square y))
 #+END_SRC
 or better still:
-#+BEGIN_SRC lisp
+#+BEGIN_SRC lisp :noweb strip-export
+<<square>>
 (defun sum-of-squares (x y)
   (+ (square x) (square y)))
 
@@ -149,8 +150,8 @@ or better still:
 #+END_SRC
 
 #+RESULTS:
-: 25
-and so forth.
+=25
+=and so forth.
 
 *** The Substitution Model for Procedure Application
 
@@ -211,9 +212,9 @@ Thus ~(f 5)~ would first be expanded as:
 (+ (* (+ 5 1) (+ 5 1)) (* (* 5 2) (* 5 2)))
 #+END_SRC
 which then reduces to
-#+BEGIN_SRC lisp :export both
-(+ (* 6 6) (* 10 10))
-(+ 36 100)
+#+BEGIN_SRC lisp
+  (+ (* 6 6) (* 10 10))
+  (+ 36 100)
 #+END_SRC
 
 #+RESULTS:
@@ -339,10 +340,10 @@ Assume that the sequence is to be evaluated in the order in which it is presente
 : 4
 
 #+BEGIN_SRC lisp
-(* (cond ((> *a* *b*) *a*)
-         ((< *a* *b*) *b*)
-         (t -1))
-   (+ *a* 1))
+  (* (cond ((> *a* *b*) *a*)
+           ((< *a* *b*) *b*)
+           (t -1))
+     (+ *a* 1))
 #+END_SRC
 
 #+RESULTS:
@@ -370,14 +371,10 @@ Define a procedure that takes three numbers as arguments and returns the sum of 
 two larger numbers.
 
 #+BEGIN_SRC lisp
-  (defun sq (x)
-    "Squares x."
-    (* x x))
-
   (defun sicp-1.3 (a b c)
     "Returns the sum of the square of the larger two numbers of a, b and c."
-    (+ (sq (max a b c))
-       (sq (- (+ a b c)
+    (+ (square (max a b c))
+       (square (- (+ a b c)
               (max a b c)
               (min a b c)))))
 
@@ -458,3 +455,286 @@ recursion before the body of ~test-1.5~ is even entered.
 Normal-order first expands the method before evaluating the arguments.
 Due to the evaluation rule of ~if~ being that only the expression resulting from the predicate being
 true/false is evaluated, ~(p)~ is never called in normal-order, hence no infinite recursion occurs.
+
+*** Example: Square Roots by Newton's Method
+
+An important distinction between a mathematical =function= and a computational =procedure= is that the
+=function= /specifies a value that is determined by one or more parameters/ whilst a =procedure= must be
+/effective/.
+Essentially, a =function= is /declarative/ - it describes what something is - whilst a =procedure= is
+/imperative/ - describing how to do something.
+For example, the square-root function can be defined as:
+\begin{equation}
+\sqrt{x} = \mbox{the} y \mbox{such that} y\geq0 \mbox{and} y^2=x
+\end{equation}
+This is not a =procedure=, it tells us nothing about /how to/ compute $y$.
+
+To develop a procedure for square roots, one approach is to use Newton's method to find the roots of
+$f(x)=0$
+\begin{equation}
+x_{n+1}=x_n-\frac{f_n}{f'_n}
+\end{equation}
+Given the definition of the square root, namely that $y^2=x$ gives $f(y)=x-y^2=0$ and the procedure to
+compute the square root is
+\begin{equation}
+y_{n+1}=y_n-\frac{x - y^2_n}{-2y_n}=\frac{y_n + \frac{x}{y_n}}{2}
+\end{equation}
+which is evaluated until the guess $y_n$ is /good enough/.
+This procedure can be summarised as: given an initial guess, check if it is good enough, if not
+improve the guess using Newton's method and start again using the new guess, in code:
+#+NAME: sqrt-1.1.7
+#+BEGIN_SRC lisp :noweb strip-export
+<<square>>
+  (defun sqrt-iter (guess x)
+    (if (good-enoughp guess x)
+        guess
+        (sqrt-iter (improve guess x) x)))
+
+  (defun improve (guess x)
+    (average guess (/ x guess)))
+  (defun average (x y)
+    (/ (+ x y) 2))
+
+  (defun good-enoughp (guess x)
+    (< (abs (- (square guess) x))
+       0.001))
+
+  (defun sqrt-1.1.7 (x)
+    (sqrt-iter 1.0 x))
+#+END_SRC
+
+#+RESULTS: sqrt-1.1.7
+: SQRT-1\.1\.7
+
+#+RESULTS:
+: SQRT-1\.1\.7
+
+example square root:
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7>>
+  (sqrt-1.1.7 9)
+#+END_SRC
+
+#+RESULTS:
+: 3.0000916
+
+**** Exercise 1.6
+
+Alyssa P. Hacker doesn't see why ~if~ needs to be provided as a special form.
+`Why can't I just define it as an ordinary procedure in terms of ~cond~?; she asks. Alyssa's friend
+Eva Lu Ator claims this can indeed be done, and she defines a new version of ~if~:
+
+#+NAME: new-if
+#+BEGIN_SRC lisp
+  (defun new-if (predicate then-clause else-clause)
+    (cond (predicate then-clause)
+          (t else-clause)))
+
+  ;; Demonstration
+  (new-if (= 2 3) 0 5)
+#+END_SRC
+
+#+RESULTS:
+: 5
+
+~new-if~ is used to rewrite the square-root program:
+
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7>>
+<<new-if>>
+  (defun new-sqrt-iter (guess x)
+    (new-if (good-enoughp guess x)
+            guess
+            (sqrt-iter (improve guess x)
+                       x)))
+#+END_SRC
+
+#+RESULTS:
+: NEW-SQRT-ITER
+
+What happens? Explain.
+
+As =Common LISP= (and =Scheme=) uses applicative-order, the arguments to ~new-if~ are evaluated before the
+body, hence an infinite recursion of ~sqrt-iter~ occurs.
+
+**** Exercise 1.7
+
+The ~good-enoughp~ test used in computing square roots will not be very effective for finding the
+square roots of very small numbers.
+Also, in real computers, arithmetic operations are almost always performed with limited precision.
+This makes our test inadequate for very large numbers.
+Explain these statements, with examples showing how the test fails for small and large numbers.
+
+Small numbers:
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7>>
+  (sqrt-1.1.7 0.0025)
+#+END_SRC
+
+#+RESULTS:
+: 0.054237623
+
+Big numbers:
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7>>
+  (sqrt-1.1.7 1.0e20)
+#+END_SRC
+
+In the case of small numbers - really numbers of comparable, or smaller, size to our absolute
+tolerance: $0.001$ - the test ~good-enoughp~ succeeds even when the relative error is large.
+For example, the square root of $0.0025$ is $0.05$ whereas ~(sqrt-1.1.7)~ returns $0.0542 \ldots$, an
+error of $8\%$.
+
+When the square root of a sufficiently large number is sought the ~guess~ becomes large enough that
+~(square guess)~ overflows in ~good-enoughp~.
+For example, ~(sqrt-1.1.7 1.0e20)~ results in overflow, whereas using double precision:
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7>>
+  (sqrt-1.1.7 1.0d20)
+#+END_SRC
+
+#+RESULTS:
+: 1\.d10
+
+An alternative strategy for implementing ~good-enoughp~ is to watch how ~guess~ changes from one
+iteration to the next and to stop when the change is a very small fraction of the guess.
+Design a square-root procedure that uses this kind of end test. 
+Does this work better for small and large numbers?
+
+Redefining ~sqrt-1.1.7~ to look at change in ~guess~:
+#+NAME: sqrt-1.1.7-new
+#+BEGIN_SRC lisp :noweb strip-export
+  <<sqrt-1.1.7>>
+  (defun sqrt-iter-new (guess guess-old x)
+    (if (close-enoughp guess guess-old)
+        guess
+        (sqrt-iter-new (improve guess x) guess x)))
+
+  (defun close-enoughp (test ref)
+    "A value is close to the reference value if their difference is less than some fraction of the
+    reference value."
+    (< (abs (- test ref))
+       (* 0.001 (abs ref))))
+
+  (defun sqrt-1.1.7-new (x)
+    (sqrt-iter-new 1.0 0.0 x))
+#+END_SRC
+
+#+RESULTS: sqrt-1.1.7-new
+: SQRT-1\.1\.7-NEW
+
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7-new>>
+  (sqrt-1.1.7-new 0.0025)
+#+END_SRC
+
+#+RESULTS:
+: 0.049999997
+
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7-new>>
+  (sqrt-1.1.7-new 1.0e20)
+#+END_SRC
+
+#+RESULTS:
+: 1\.e10
+
+But I think I can do better using a relative comparison:
+#+NAME: sqrt-1.1.7-rel
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7>>
+  (defun good-enough-relp (guess x)
+    "Improved good-enoughp, checks relative error and will not overflow for large numbers.
+
+  Note that this cannot be used for sqrt(0)."
+    (< (abs (- (* guess (/ guess x)) 1))
+       0.001))
+
+  (defun sqrt-iter-rel (guess x)
+    (if (good-enough-relp guess x)
+        guess
+        (sqrt-iter-rel (improve guess x) x)))
+
+  (defun sqrt-1.1.7-rel (x)
+    (cond ((> x 0)
+           (sqrt-iter-rel 1.0 x))
+          ((< x 0)
+           (error "Trying to evaluate sqrt of negative number."))
+          (t 0)))
+#+END_SRC
+
+#+RESULTS:
+: SQRT-1\.1\.7-REL
+
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7-rel>>
+  (sqrt-1.1.7-rel 0.0025)
+#+END_SRC
+
+#+RESULTS:
+: 0.050000273
+
+#+BEGIN_SRC lisp :noweb strip-export
+<<sqrt-1.1.7-rel>>
+  (sqrt-1.1.7-rel 1.0e20)
+#+END_SRC
+
+#+RESULTS:
+: 10000022000.0
+
+So my way is not better, it is less accurate than the modification suggested in Exercise 1.7, but it
+does require less storage!
+However, if the solution is converging very slowly, ~close-enoughp~ might return a false positive.
+
+**** Exercise 1.8
+
+Newton's method applied to cube roots is given as:
+\begin{equation}
+y^3=x \Rightarrow y_{n+1} = \frac{x/y^2_n + 2y_n}{3}
+\end{equation}
+Use this to implement a cube-root procedure.[fn:newton]
+
+#+NAME: cbrt
+#+BEGIN_SRC lisp :noweb strip-export
+  <<square>>
+  <<sqrt-1.1.7-new>>
+  (defun cbrt-iter (guess guess-old x)
+    (if (close-enoughp guess guess-old)
+        guess
+        (cbrt-iter (improve-cbrt guess x) guess x)))
+
+  (defun improve-cbrt (guess x)
+    (/ (+ (/ x (square guess))
+          (* 2 guess))
+       3))
+
+  (defun cbrt (x)
+    (cbrt-iter 1.0 0.0 x))
+#+END_SRC
+
+#+RESULTS: cbrt
+: CBRT
+
+#+RESULTS:
+: CBRT
+
+#+BEGIN_SRC lisp :noweb strip-export
+  <<cbrt>>
+  (cbrt 8)
+#+END_SRC
+
+#+RESULTS:
+: 2.0
+
+#+BEGIN_SRC lisp :noweb strip-export
+  <<cbrt>>
+  (cbrt -8)
+#+END_SRC
+
+#+RESULTS:
+: -2.0
+
+[fn:newton] A general Newton's method is implemented in section 1.3.4 as an abstraction of these
+square- and cube-root procedures.
+
+*** Procedures as Black-Box Abstractions
