@@ -843,4 +843,4 @@ enclosing scope of ~sqrt~ - this is known as /lexical scoping/
 /i.e./ global function - it can be used within a procedure definition but won't work as we want here -
 for this you need ~LABELS~ and ~FLET~ - these associate names with local procedure definitions, the
 difference being procedures defined using ~LABELS~ can be recursive and reference each other whilst
-with ~FLET~ the cannot.
+with ~FLET~ they cannot.
