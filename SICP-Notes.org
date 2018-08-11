@@ -3,10 +3,12 @@
 #+TITLE: SICP Notes
 #+AUTHOR: Paul Bartholomew
 
+#+LATEX_HEADER: \usepackage{fullpage}
+
 These notes are my work-through of Structure and Interpretation of Computer Programs
 (=SICP=)[fn:sch-cl].
 
-[fn:sch-cl]*N.B.* though =SICP= is written in =Scheme=, I will be using =Common LISP=.
+[fn:sch-cl] N.B. though =SICP= is written in =Scheme=, I will be using =Common LISP=.
 
 * Building Abstractions with Procedures
 
@@ -29,8 +31,11 @@ for example:
 
 #+RESULTS:
 : 486
-These compound expressions are referred to as /combinations/ and take the form: ~(operator operand1
-operand2 ... operandn)~, returning the value of applying the procedure defined by the operator to
+These compound expressions are referred to as /combinations/ and take the form:
+#+BEGIN_SRC lisp
+(operator operand1 operand2 ... operandn)
+#+END_SRC
+returning the value of applying the procedure defined by the operator to
 the /arguments/ that are the values of the operands.
 
 *** Naming and the Environment
@@ -148,10 +153,7 @@ or better still:
 
 (sum-of-squares 3 4)
 #+END_SRC
-
-#+RESULTS:
-=25
-=and so forth.
+and so forth.
 
 *** The Substitution Model for Procedure Application
 
@@ -225,13 +227,13 @@ particular, ~(+ 5 1)~ and ~(* 5 2)~ are evaluated twice.
 
 This /fully expand then reduce/ evaluation method is known as /normal-order evaluation/ as opposed to
 the /evaluate arguments and then apply/ method that the =Scheme= interpreter actually
-uses[fn:lisp-order?], called /applicative-order evaluation/.
+uses[fn:lisp-order], called /applicative-order evaluation/.
 It can be shown that for procedure applications that can be modelled using substitution and yield
 legitimate values, normal-order and applicative-order evaluation produce the same value - this is
 not necessarily true in the case of an /illegitimate/ value where the two will not produce the same
 result.
 
-[fn:lisp-order?] =Common LISP= uses
+[fn:lisp-order] =Common LISP= uses applicative-order evaluation also.
 
 *** Conditional Expressions and Predicates
 
@@ -465,7 +467,7 @@ Essentially, a =function= is /declarative/ - it describes what something is - wh
 /imperative/ - describing how to do something.
 For example, the square-root function can be defined as:
 \begin{equation}
-\sqrt{x} = \mbox{the} y \mbox{such that} y\geq0 \mbox{and} y^2=x
+\sqrt{x} = \mbox{the } y \mbox{ such that } y\geq0 \mbox{ and } y^2=x
 \end{equation}
 This is not a =procedure=, it tells us nothing about /how to/ compute $y$.
 
@@ -819,7 +821,6 @@ We can achieve this localisation using /block structure/, rewriting ~sqrt~ as[fn
 We can further improve upon this, simplifying the localised procedures, because the scope of ~x~ is
 local to ~sqrt~ we can leave it as a free variable in the local procedures, its value coming from the
 enclosing scope of ~sqrt~ - this is known as /lexical scoping/
-
 #+BEGIN_SRC lisp :noweb strip-export 
   <<square>>
   (defun sqrt-1.1.8-lex (x)
@@ -839,8 +840,46 @@ enclosing scope of ~sqrt~ - this is known as /lexical scoping/
 #+RESULTS:
 : 3.0000916
 
+In fact this idea could be taken further: ~good-enoughp~ and ~improve~ are both internal to ~sqrt-iter~,
+~sqrt~ could be rewritten as:
+
+#+BEGIN_SRC lisp :noweb strip-export
+  <<square>>
+  (defun sqrt-1.1.8-lex2 (x)
+    (labels ((sqrt-iter (guess)
+               (labels ((good-enoughp ()
+                          (< (abs (- (square guess) x)) 0.001))
+                        (improve ()
+                          (/ (+ guess (/ x guess)) 2)))
+                 (if (good-enoughp)
+                     guess
+                     (sqrt-iter (improve))))))
+      (sqrt-iter 1.0)))
+
+  (sqrt-1.1.8-lex2 16)
+#+END_SRC
+
+#+RESULTS:
+: 4.0000005
+
 [fn:lisp-blockstruct] This is quite a bit easier in =Scheme=, in =Common LISP= ~DEFUN~ defines a =top level=
 /i.e./ global function - it can be used within a procedure definition but won't work as we want here -
 for this you need ~LABELS~ and ~FLET~ - these associate names with local procedure definitions, the
 difference being procedures defined using ~LABELS~ can be recursive and reference each other whilst
 with ~FLET~ they cannot.
+
+*** Summary
+
+In this section we have seen how we can build up complex ideas from simpler blocks by abstracting
+away the details, whether that be in compound values or procedures.
+The substitution model for =procedure= evaluation was introduced: procedures are recursively expanded
+until primitive procedures which can be evaluated are obtained.
+
+Some key ideas:
+- The order in which a =combination= is evaluated can affect the result - in practice, both =Scheme= and
+  =Common LISP= use /applicative/-order whereby the argeuments are evaluated before being passed into a
+  =procedure=.
+- A =procedure= differs from a =function= by explaining /how/ to do something, not just /describing/
+  something.
+
+
