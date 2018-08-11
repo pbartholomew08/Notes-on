@@ -738,3 +738,109 @@ Use this to implement a cube-root procedure.[fn:newton]
 square- and cube-root procedures.
 
 *** Procedures as Black-Box Abstractions
+
+A key takeaway from ~sqrt~ is that complex problems can be broken up into a number of smaller
+problems: testing for convergence, improving the guess /etc/.
+By abstracting out each of these tasks as a procedure, we do not need to worry about how they are
+implemented and can treat them as a black box like: ~2->square->4~.
+I particularly like what they say regarding this concept of breaking up programs:
+#+BEGIN_QUOTE
+The importance of this decomposition strategy is not simply that one is dividing the program into
+parts.
+After all, we could take any large program and divide it into parts - the first ten lines, the next
+ten lines, the next ten lines, and so on.
+Rather, it is crucial that each procedure accomplishes an identifiable task that can be used as a
+module in defining other procedures.
+#+END_QUOTE
+So while ~square~ is a procedure, from the perspective of ~good-enoughp~ it is a /procedural abstraction/
+of computing the square of a number - all we need be concerned with is that it does compute the
+square, /how/ it does this is not immediately of our concern[fn:functional].
+
+[fn:functional] In order to be able to truly ignore implementation details probably requires that
+the procedures be written in a functional style - we need to be confident that it will not mess with
+our state.
+
+**** Local names
+
+Vital to this ability to ignore implementation details is that the names of a procedure's formal
+parameters do not change the behaviour, for example
+#+BEGIN_SRC lisp
+  (defun square (x)
+    (* x x))
+#+END_SRC
+and
+#+BEGIN_SRC lisp
+  (defun square (y)
+    (* y y))
+#+END_SRC
+should be indistinguishable - that is, the parameter names are /local/ to the body of the procedure,
+/i.e./ calling the first definition of ~square~ from a procedure which also defines ~x~, the ~x~ in the
+outer procedure would be different from, and thus unaffected by the ~x~ in ~square~.
+If the parameters were not local to the bodies of their procedures, then implementation details of
+procedures called within the outer procedure could affect the behaviour of the outer procedure - the
+inner procedure could no longer be treated as a black box.
+
+The formal parameters are said to be /bound/ - the procedure definition is unchanged if it is
+consistently renamed.
+Alternatively a variable that is not bound is /free/.
+The expressions which define a variable are the scope of that variable, for example the body of a
+procedure is the scope of its formal parameters.
+The free variable definitions must therefore come from an enclosing scope.
+
+**** Internal definitions and block structure
+
+Formal parameters allow us to isolate names and their definition to the body of a procedure, however
+as seen in the various incarnations of ~sqrt~ and ~cbrt~ it would be good to be able to further isolate
+procedures representing common ideas, for example, ~good-enoughp~ or ~improve~ - furthermore, the user
+of ~sqrt~ or ~cbrt~ is unlikely to be concerned with these specific implementation details - for both
+these reasons it is desirable to be able to localise subprocedures.
+
+We can achieve this localisation using /block structure/, rewriting ~sqrt~ as[fn:lisp-blockstruct]
+
+#+BEGIN_SRC lisp :noweb strip-export
+<<square>>
+  (defun sqrt-1.1.8 (x)
+    (labels ((good-enoughp (guess x)
+               (< (abs (- (square guess) x)) 0.001))
+             (improve (guess x)
+               (/ (+ guess (/ x guess)) 2))
+             (sqrt-iter (guess x)
+               (if (good-enoughp guess x)
+                   guess
+                   (sqrt-iter (improve guess x) x))))
+      (sqrt-iter 1.0 x)))
+
+  (sqrt-1.1.8 4)
+#+END_SRC
+
+#+RESULTS:
+: 2.0
+
+We can further improve upon this, simplifying the localised procedures, because the scope of ~x~ is
+local to ~sqrt~ we can leave it as a free variable in the local procedures, its value coming from the
+enclosing scope of ~sqrt~ - this is known as /lexical scoping/
+
+#+BEGIN_SRC lisp :noweb strip-export 
+  <<square>>
+  (defun sqrt-1.1.8-lex (x)
+    (labels ((good-enoughp (guess)
+               (< (abs (- (square guess) x)) 0.001))
+             (improve (guess)
+               (/ (+ guess (/ x guess)) 2))
+             (sqrt-iter (guess)
+               (if (good-enoughp guess)
+                   guess
+                   (sqrt-iter (improve guess)))))
+      (sqrt-iter 1.0)))
+
+  (sqrt-1.1.8-lex 9)
+#+END_SRC
+
+#+RESULTS:
+: 3.0000916
+
+[fn:lisp-blockstruct] This is quite a bit easier in =Scheme=, in =Common LISP= ~DEFUN~ defines a =top level=
+/i.e./ global function - it can be used within a procedure definition but won't work as we want here -
+for this you need ~LABELS~ and ~FLET~ - these associate names with local procedure definitions, the
+difference being procedures defined using ~LABELS~ can be recursive and reference each other whilst
+with ~FLET~ the cannot.
