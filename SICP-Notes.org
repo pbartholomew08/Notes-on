@@ -6,6 +6,7 @@
 #+EXCLUDE_TAGS: no_export
 
 #+LATEX_HEADER: \usepackage{fullpage}
+#+LATEX_HEADER: \usepackage{placeins}
 
 These notes are my work-through of Structure and Interpretation of Computer Programs
 (=SICP=)[fn:sch-cl].
@@ -926,7 +927,7 @@ the resulting process of which can again be visualised by expanding using the su
 giving the process for computing $6!$ shown in /fig/. [[fig:linear-iteration]].
 #+CAPTION: A linear iterative process for computing 6!.
 #+NAME: fig:linear-iteration
-#+ATTR_LATEX: :width 0.65\textwidth
+#+ATTR_LATEX: :height 0.3\textheight
 [[./SICP1/figures/linear-iteration.png]]
 
 Comparing the two processes it can be seen that they both compute $n!$ with the same sequence of
@@ -962,6 +963,10 @@ variables need be tracked to describe its state[fn:tco].
 
 [fn:tco] Depending on the compiler/interpreter as written it may still execute as a recursive
 process - /tall call optimisation/ is required to ensure an iterative process is generated.
+
+#+BEGIN_LATEX
+\FloatBarrier
+#+END_LATEX
 
 **** Exercise 1.9
 
