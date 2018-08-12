@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>SICP Notes</title>
+<!-- 2018-08-12 Sun 15:39 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Paul Bartholomew" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">SICP Notes</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Building Abstractions with Procedures</a>
+<ul>
+<li><a href="#sec-1-1">1.1. The Elements of Programming</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1. Expressions</a></li>
+<li><a href="#sec-1-1-2">1.1.2. Naming and the Environment</a></li>
+<li><a href="#sec-1-1-3">1.1.3. Evaluating Combinations</a></li>
+<li><a href="#sec-1-1-4">1.1.4. Compound Procedures</a></li>
+<li><a href="#sec-1-1-5">1.1.5. The Substitution Model for Procedure Application</a></li>
+<li><a href="#sec-1-1-6">1.1.6. Conditional Expressions and Predicates</a></li>
+<li><a href="#sec-1-1-7">1.1.7. Example: Square Roots by Newton's Method</a></li>
+<li><a href="#sec-1-1-8">1.1.8. Procedures as Black-Box Abstractions</a></li>
+<li><a href="#sec-1-1-9">1.1.9. Summary</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">1.2. Procedures and the Processes They Generate</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1. Linear Recursion and Iteration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+These notes are my work-through of Structure and Interpretation of Computer Programs
+(<code>SICP</code>)<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Building Abstractions with Procedures</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> The Elements of Programming</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+A programming language can be seen as a tool to express complex ideas based on building up <b>primitive
+expressions</b> into compound expressions by <b>combination</b> and <b>abstracting</b> these by naming them and
+manipulating these named units.
+These elements can be further broken down into two categories: <b>data</b>, <i>i.e.</i> `stuff'; and <b>procedures</b>,
+the rules for manipulating `stuff'.
+</p>
+</div>
+
+<div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> Expressions</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Perhaps the most primitive expression is a number, <i>e.g.</i> entering <code>10</code> in a <code>REPL</code> will return <code>10</code>.
+Combining these primitives with primitive procedures such as <code>+</code> or <code>*</code> results in a <i>compound expression</i>
+for example:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ 137 349)
+</pre>
+</div>
+<p>
+These compound expressions are referred to as <i>combinations</i> and take the form:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(operator operand1 operand2 ... operandn)
+</pre>
+</div>
+<p>
+returning the value of applying the procedure defined by the operator to
+the <i>arguments</i> that are the values of the operands.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> Naming and the Environment</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+In order to abstract ideas, it must be possible to associate a name with an object: the name
+identifies a <i>variable</i> whose <i>value</i> is the object.
+Here arises one of the differences between <code>Scheme</code> and <code>Common LISP</code>: <code>Scheme</code> is a <code>LISP-1</code> having only
+one namespace so the same operator <code>define</code> suffices to create variables and operators whereas <code>Common
+LISP</code> is a <code>LISP-2</code> with separate namespaces for operators and variables, created by <code>defun</code> and <code>defvar</code>
+respectively, for example contrast <code>Scheme</code>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-scheme">(define pi 3.14159)
+(define radius 10)
+(* pi (* radius radius))
+</pre>
+</div>
+<p>
+with <code>Common LISP</code> <sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defconstant +PI+ 3.14159)
+(defvar *radius* 10)
+(* +PI+ (* *radius* *radius*))
+</pre>
+</div>
+<p>
+The ability to abstract compound operations is key to the utility of a programming language, allowing
+complex programs to be constructed as a series of computational objects of increasing complexity.
+This approach is facilitated by the <code>REPL</code> allowing incremental development and
+testing.<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup>
+Maintaining these <code>symbol-&gt;value</code> associations requires some form of memory, known as the <i>environment</i>
+(specifically the <i>global environment</i> for these top-level forms).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> Evaluating Combinations</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+As an example procedure, consider that when the interpreter evaluates a combination, it is itself
+following a procedure:
+</p>
+<ol class="org-ol">
+<li>Evaluate the subexpressions of the combination.
+</li>
+<li>Apply the procedure that is he value of the leftmost subexpression (the operator) to the arguments
+that are the values of the other subexpressions (the operands).
+</li>
+</ol>
+
+<p>
+The above procedure is <i>recursive</i>, it calls itself as one of the steps.
+Recursion is very powerful, allowing what would, in the case of deeply nested combinations, to be
+expressed in a comparatively clear manner.
+For example, evaluating
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(* (+ 2 (* 4 6))
+   (+ 3 5 7))
+</pre>
+</div>
+
+<p>
+requires that the evaluation rule be applied to four different combinations.
+This process can be visualised in the form of a tree <i>fig.</i> <a href="#fig:evaluation-tree">1</a> where each leaf
+represents a combination with branches to its operator and operands stemming from it with terminal
+nodes represent either operators or values.
+To evaluate a node, apply the operator coming from its left branch to the operands coming from each
+other branch, essentially information travels upwards from the terminal nodes<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup>.
+</p>
+
+
+<div id="fig:evaluation-tree" class="figure">
+<p><img src="./SICP1/figures/evaluation-tree.png" alt="evaluation-tree.png" />
+</p>
+<p><span class="figure-number">Figure 1:</span> Tree representation of evaluation rule.</p>
+</div>
+
+<p>
+So, as can be seen, each node is evaluated by recursively applying the evaluation rule to each
+branch until a terminal node is reached at which point its value is applied/operated upon.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-4" class="outline-4">
+<h4 id="sec-1-1-4"><span class="section-number-4">1.1.4</span> Compound Procedures</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+In the previous section primitive data and procedures were introduced by way of numbers and
+arithmetic operations, nesting of which allows operations to be combined and by defining variables,
+a limited form of abstraction.
+For example, in computing the circumference of a circle, the radius must be squared.
+More useful than writing out <code>(* r r)</code> whenever this is necessary would be to express the idea of
+<i>squaring</i> as <i>to multiply something by itself</i>.
+In <code>Scheme</code> this is expressed as
+</p>
+<div class="org-src-container">
+
+<pre class="src src-scheme">(define (square x)
+  (* x x))
+</pre>
+</div>
+<p>
+or, equivalently in <code>Common LISP</code> as
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="square">(defun square (x)
+  (* x x))
+</pre>
+</div>
+
+<p>
+here we can see the difference between <code>Scheme</code> as a <code>LISP-1</code> and <code>Common LISP</code> as a <code>LISP-2</code>, we need to
+tell <code>Common LISP</code> the name <code>square</code> is a function object, not a variable, whereas this distinction
+does not exist in <code>Scheme</code>.
+</p>
+
+<p>
+To analyse <code>square</code> it can be seen that something <code>x</code> is passed to the function and it multiplied by
+itself is returned.
+Naturally <code>square</code> can be used to build more complex expressions, for example, \(x^2+y^2\) can be
+expressed as
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ (square x) (square y))
+</pre>
+</div>
+<p>
+or better still:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sum-of-squares (x y)
+  (+ (square x) (square y)))
+
+(sum-of-squares 3 4)
+</pre>
+</div>
+<p>
+and so forth.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-5" class="outline-4">
+<h4 id="sec-1-1-5"><span class="section-number-4">1.1.5</span> The Substitution Model for Procedure Application</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<p>
+As a model for how the interpreter operates, consider the function <code>f</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun f (a)
+  (sum-of-squares (+ a 1)
+                  (* a 2)))
+</pre>
+</div>
+<p>
+To evaluate such a compound procedure, the substitution model evaluates the body of the procedure
+with each parameter replaced by the corresponding argument.
+For example, <code>(f 5)</code> would be evaluated by first retrieving the body of <code>f</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sum-of-squares (+ a 1) (* a 2))
+</pre>
+</div>
+<p>
+and replacing the parameter <code>a</code> by the argument <code>5</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sum-of-squares (+ 5 1) (* 5 2))
+</pre>
+</div>
+<p>
+yielding three subproblems: <code>(+ 5 1)</code>, <code>(* 5 2)</code> and the application of <code>sum-of-squares</code> to the results.
+Evaluating <code>(+ 5 1)</code> and <code>(* 5 2)</code> and substituting into the body of <code>sum-of-squares</code> reduces the
+expression to
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ (square 6) (square 10))
+</pre>
+</div>
+<p>
+With the definition of <code>square</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ (* 6 6) (* 10 10))
+</pre>
+</div>
+<p>
+which reduces to:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ 36 100)
+</pre>
+</div>
+<p>
+which, as it is composed of only primitive operations and variables can be evaluated to yield <code>136</code>.
+</p>
+
+<p>
+It is important to note that the substitution model <i>is a model</i>:
+</p>
+<ul class="org-ul">
+<li>It is not how a typical interpreter would evaluate the procedure by manipulating the text as
+outlined above.
+</li>
+<li>Over the course of this, a sequence of increasingly elaborate models of how interpreters work will
+be explored, culminating with a complete implementation of an interpreter and compiler in chapter
+5 - the substitution model serves only as a first simplified model.
+</li>
+</ul>
+</div>
+
+<ol class="org-ol"><li><a id="sec-1-1-5-1" name="sec-1-1-5-1"></a>Applicative Order Versus Normal Order<br  /><div class="outline-text-5" id="text-1-1-5-1">
+<p>
+Based on the description of the evaluation tree <i>fig</i>. <a href="#fig:evaluation-tree">1</a> the interpreter first
+evaluates the operator and operands, then applies the resulting procedure to the resulting
+arguments.
+An alternative would be to <i>not</i> evaluate the operands until their values are needed, instead the
+interpreter would substitute operand expressions for parameters until an expression consisting of
+solely primitive expressions is obtained which can then be evaluated.
+Thus <code>(f 5)</code> would first be expanded as:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sum-of-squares (+ 5 1) (* 5 2))
+(+ (square (+ 5 1)) (square (* 5 2)))
+(+ (* (+ 5 1) (+ 5 1)) (* (* 5 2) (* 5 2)))
+</pre>
+</div>
+<p>
+which then reduces to
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ (* 6 6) (* 10 10))
+(+ 36 100)
+</pre>
+</div>
+
+<p>
+The result is the same as the previous model of evaluation but results in a different process: in
+particular, <code>(+ 5 1)</code> and <code>(* 5 2)</code> are evaluated twice.
+</p>
+
+<p>
+This <i>fully expand then reduce</i> evaluation method is known as <i>normal-order evaluation</i> as opposed to
+the <i>evaluate arguments and then apply</i> method that the <code>Scheme</code> interpreter actually
+uses<sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup>, called <i>applicative-order evaluation</i>.
+It can be shown that for procedure applications that can be modelled using substitution and yield
+legitimate values, normal-order and applicative-order evaluation produce the same value - this is
+not necessarily true in the case of an <i>illegitimate</i> value where the two will not produce the same
+result.
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-1-1-6" class="outline-4">
+<h4 id="sec-1-1-6"><span class="section-number-4">1.1.6</span> Conditional Expressions and Predicates</h4>
+<div class="outline-text-4" id="text-1-1-6">
+<p>
+In order to make a test and perform different operations depending on the tests result, some form of
+conditional expression is required.
+In <code>LISP</code> this is achieved by the <code>cond</code> form, for example, the absolute value of a number could be
+expressed as
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sicp-abs-1 (x)
+  (cond ((&gt; x 0) x)
+        ((&lt; x 0) (- x))
+        (t 0)))
+</pre>
+</div>
+<p>
+it takes the form: <code>(cond (&lt;p1&gt; &lt;e1&gt;) (&lt;p2&gt; &lt;e2&gt;) ... (&lt;pn&gt; &lt;en&gt;))</code> where each clause <code>(&lt;pn&gt; &lt;en&gt;)</code>
+consists of a <i>predicate</i>, <i>i.e.</i> an expression returning true or false, and an expression which is
+evaluated only if the predicate is true.
+Evaluation falls down the clauses until a predicate evaluating as <code>true</code> is found, its corresponding
+expression is then returned as the value of the conditional expression.
+Of course, the absolute value procedure could be reduced to a single test by noting that the
+absolute value of any real number greater than or equal to zero is itself and itself negated
+otherwise:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sicp-abs-2 (x)
+  (if (&lt; x 0)
+      (- x)
+      x))
+</pre>
+</div>
+<p>
+where <code>(if &lt;pred&gt; &lt;then&gt; &lt;else&gt;)</code> is a special form of <code>cond</code> where the <code>then</code> expression is returned if
+the predicate is <code>true</code> or the <code>else</code> expression if the predicate is <code>false</code>.
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-1-1-6-1" name="sec-1-1-6-1"></a>Exercise 1.1<br  /><div class="outline-text-5" id="text-1-1-6-1">
+<p>
+Below is a sequence of expressions.
+What is the result printed by the interpreter in response to each expression?
+Assume that the sequence is to be evaluated in the order in which it is presented.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">10
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ 5 3 4)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(- 9 1)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(/ 6 2)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ (* 2 4) (- 4 6))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defvar *a* 3)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defvar *b* (+ *a* 1))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(+ *a* *b* (* *a* *b*))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(= *a* *b*)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(if (and (&gt; *b* *a*) (&lt; *b* (* *a* *b*)))
+    *b*
+    *a*)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(* (cond ((&gt; *a* *b*) *a*)
+         ((&lt; *a* *b*) *b*)
+         (t -1))
+   (+ *a* 1))
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="sec-1-1-6-2" name="sec-1-1-6-2"></a>Exercise 1.2<br  /><div class="outline-text-5" id="text-1-1-6-2">
+<p>
+Translate the following expression into prefix form
+</p>
+\begin{equation}
+\frac{5 + \frac{1}{2} + \left( 2 - \left( 3 - \left( 6 + \frac{4}{5} \right) \right) \right)}{3
+\left( 6 - 2 \right) \left( 2 - 7 \right)}
+\end{equation}
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(/ (+ 5 (/ 1 2) (- 2 3 (+ 6 (/ 4 5))))
+   (* 3 (- 6 2) (- 2 7)))
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="sec-1-1-6-3" name="sec-1-1-6-3"></a>Exercise 1.3<br  /><div class="outline-text-5" id="text-1-1-6-3">
+<p>
+Define a procedure that takes three numbers as arguments and returns the sum of the squares of the
+two larger numbers.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sicp-1.3 (a b c)
+  "Returns the sum of the square of the larger two numbers of a, b and c."
+  (+ (square (max a b c))
+     (square (- (+ a b c)
+            (max a b c)
+            (min a b c)))))
+
+;; Test the operation of sicp-1.3
+(sicp-1.3 1 2 3)
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="sec-1-1-6-4" name="sec-1-1-6-4"></a>Exercise 1.4<br  /><div class="outline-text-5" id="text-1-1-6-4">
+<p>
+Observe that our model of evaluation allows for combinations whose operators are compound
+expressions.
+Use this observation to describe the behaviour of the following procedure:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-scheme">(defun (a-plus-abs-b a b)
+  ((if (&gt; b 0) + -) a b))
+</pre>
+</div>
+
+<p>
+Translated into <code>Common LISP</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun a-plus-abs-b (a b)
+  (funcall (if (&gt; b 0) #'+ #'-)
+           a b))
+
+;; Test a-plus-abs-b
+(= (a-plus-abs-b 1 1)
+   (a-plus-abs-b 1 -1))
+</pre>
+</div>
+
+<p>
+The conditional <code>(if (&gt; b 0) #'+ #'-)</code> returns the function <code>+</code> or <code>-</code> depending on the predicate.
+The call <code>(funcall #'f a b)</code> then calls the returned function with the arguments <code>a</code> and <code>b</code>.
+</p>
+</div>
+</li>
+
+<li><a id="sec-1-1-6-5" name="sec-1-1-6-5"></a>Exercise 1.5<br  /><div class="outline-text-5" id="text-1-1-6-5">
+<p>
+Ben Bitdiddle has invented a test to determine whether the interpreter he is faced with is using
+applicative-order evaluation or normal-order evaluation.
+He defines the following two procedures:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-scheme">(define (p)
+  (p))
+
+(define (test x y)
+  (if (= x 0)
+      0
+      y))
+</pre>
+</div>
+
+<p>
+Then he evaluates the expression <code>(test 0 (p))</code>.
+</p>
+
+<p>
+What behaviour will Ben observe with an interpreter that uses applicative-order evaluation?
+What behaviour will he observe with an interpreter that uses normal-order evaluation?
+Explain your answer.
+(Assume that the evaluation rule for the special form <code>if</code> is the same whether the interpreter is
+using normal- or applicative-order: The predicate expression is evaluated first, and the result
+determines whether to evaluate the consequent or the alternative expression.)
+</p>
+
+<p>
+Translated into <code>Common LISP</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun p ()
+  (funcall #'p))
+
+(defun test-1.5 (x y)
+  (if (= x 0)
+      0
+      y))
+
+(test-1.3 0 (p))
+</pre>
+</div>
+
+<p>
+Using applicative-order the arguments are evaluated before the method is applied.
+As a result, calling <code>(test-1.5 0 (p))</code> leads to <code>(p)</code> being evaluated, resulting in an infinite
+recursion before the body of <code>test-1.5</code> is even entered.
+Normal-order first expands the method before evaluating the arguments.
+Due to the evaluation rule of <code>if</code> being that only the expression resulting from the predicate being
+true/false is evaluated, <code>(p)</code> is never called in normal-order, hence no infinite recursion occurs.
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-1-1-7" class="outline-4">
+<h4 id="sec-1-1-7"><span class="section-number-4">1.1.7</span> Example: Square Roots by Newton's Method</h4>
+<div class="outline-text-4" id="text-1-1-7">
+<p>
+An important distinction between a mathematical <code>function</code> and a computational <code>procedure</code> is that the
+<code>function</code> <i>specifies a value that is determined by one or more parameters</i> whilst a <code>procedure</code> must be
+<i>effective</i>.
+Essentially, a <code>function</code> is <i>declarative</i> - it describes what something is - whilst a <code>procedure</code> is
+<i>imperative</i> - describing how to do something.
+For example, the square-root function can be defined as:
+</p>
+\begin{equation}
+\sqrt{x} = \mbox{the } y \mbox{ such that } y\geq0 \mbox{ and } y^2=x
+\end{equation}
+<p>
+This is not a <code>procedure</code>, it tells us nothing about <i>how to</i> compute \(y\).
+</p>
+
+<p>
+To develop a procedure for square roots, one approach is to use Newton's method to find the roots of
+\(f(x)=0\)
+</p>
+\begin{equation}
+x_{n+1}=x_n-\frac{f_n}{f'_n}
+\end{equation}
+<p>
+Given the definition of the square root, namely that \(y^2=x\) gives \(f(y)=x-y^2=0\) and the procedure to
+compute the square root is
+</p>
+\begin{equation}
+y_{n+1}=y_n-\frac{x - y^2_n}{-2y_n}=\frac{y_n + \frac{x}{y_n}}{2}
+\end{equation}
+<p>
+which is evaluated until the guess \(y_n\) is <i>good enough</i>.
+This procedure can be summarised as: given an initial guess, check if it is good enough, if not
+improve the guess using Newton's method and start again using the new guess, in code:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="sqrt-1.1.7">(defun sqrt-iter (guess x)
+  (if (good-enoughp guess x)
+      guess
+      (sqrt-iter (improve guess x) x)))
+
+(defun improve (guess x)
+  (average guess (/ x guess)))
+(defun average (x y)
+  (/ (+ x y) 2))
+
+(defun good-enoughp (guess x)
+  (&lt; (abs (- (square guess) x))
+     0.001))
+
+(defun sqrt-1.1.7 (x)
+  (sqrt-iter 1.0 x))
+</pre>
+</div>
+
+<pre class="example">
+SQRT-1\.1\.7
+</pre>
+
+<p>
+example square root:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7 9)
+</pre>
+</div>
+</div>
+
+<ol class="org-ol"><li><a id="sec-1-1-7-1" name="sec-1-1-7-1"></a>Exercise 1.6<br  /><div class="outline-text-5" id="text-1-1-7-1">
+<p>
+Alyssa P. Hacker doesn't see why <code>if</code> needs to be provided as a special form.
+`Why can't I just define it as an ordinary procedure in terms of <code>cond</code>?; she asks. Alyssa's friend
+Eva Lu Ator claims this can indeed be done, and she defines a new version of <code>if</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="new-if">(defun new-if (predicate then-clause else-clause)
+  (cond (predicate then-clause)
+        (t else-clause)))
+
+;; Demonstration
+(new-if (= 2 3) 0 5)
+</pre>
+</div>
+
+<pre class="example">
+5
+</pre>
+
+<p>
+<code>new-if</code> is used to rewrite the square-root program:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun new-sqrt-iter (guess x)
+  (new-if (good-enoughp guess x)
+          guess
+          (sqrt-iter (improve guess x)
+                     x)))
+</pre>
+</div>
+
+<p>
+What happens? Explain.
+</p>
+
+<p>
+As <code>Common LISP</code> (and <code>Scheme</code>) uses applicative-order, the arguments to <code>new-if</code> are evaluated before the
+body, hence an infinite recursion of <code>sqrt-iter</code> occurs.
+</p>
+</div>
+</li>
+
+<li><a id="sec-1-1-7-2" name="sec-1-1-7-2"></a>Exercise 1.7<br  /><div class="outline-text-5" id="text-1-1-7-2">
+<p>
+The <code>good-enoughp</code> test used in computing square roots will not be very effective for finding the
+square roots of very small numbers.
+Also, in real computers, arithmetic operations are almost always performed with limited precision.
+This makes our test inadequate for very large numbers.
+Explain these statements, with examples showing how the test fails for small and large numbers.
+</p>
+
+<p>
+Small numbers:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7 0.0025)
+</pre>
+</div>
+
+<p>
+Big numbers:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7 1.0e20)
+</pre>
+</div>
+
+<p>
+In the case of small numbers - really numbers of comparable, or smaller, size to our absolute
+tolerance: \(0.001\) - the test <code>good-enoughp</code> succeeds even when the relative error is large.
+For example, the square root of \(0.0025\) is \(0.05\) whereas <code>(sqrt-1.1.7)</code> returns \(0.0542 \ldots\), an
+error of \(8\%\).
+</p>
+
+<p>
+When the square root of a sufficiently large number is sought the <code>guess</code> becomes large enough that
+<code>(square guess)</code> overflows in <code>good-enoughp</code>.
+For example, <code>(sqrt-1.1.7 1.0e20)</code> results in overflow, whereas using double precision:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7 1.0d20)
+</pre>
+</div>
+
+<p>
+An alternative strategy for implementing <code>good-enoughp</code> is to watch how <code>guess</code> changes from one
+iteration to the next and to stop when the change is a very small fraction of the guess.
+Design a square-root procedure that uses this kind of end test. 
+Does this work better for small and large numbers?
+</p>
+
+<p>
+Redefining <code>sqrt-1.1.7</code> to look at change in <code>guess</code>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="sqrt-1.1.7-new">(defun sqrt-iter-new (guess guess-old x)
+  (if (close-enoughp guess guess-old)
+      guess
+      (sqrt-iter-new (improve guess x) guess x)))
+
+(defun close-enoughp (test ref)
+  "A value is close to the reference value if their difference is less than some fraction of the
+  reference value."
+  (&lt; (abs (- test ref))
+     (* 0.001 (abs ref))))
+
+(defun sqrt-1.1.7-new (x)
+  (sqrt-iter-new 1.0 0.0 x))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7-new 0.0025)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7-new 1.0e20)
+</pre>
+</div>
+
+<p>
+But I think I can do better using a relative comparison:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="sqrt-1.1.7-rel">(defun good-enough-relp (guess x)
+  "Improved good-enoughp, checks relative error and will not overflow for large numbers.
+
+Note that this cannot be used for sqrt(0)."
+  (&lt; (abs (- (* guess (/ guess x)) 1))
+     0.001))
+
+(defun sqrt-iter-rel (guess x)
+  (if (good-enough-relp guess x)
+      guess
+      (sqrt-iter-rel (improve guess x) x)))
+
+(defun sqrt-1.1.7-rel (x)
+  (cond ((&gt; x 0)
+         (sqrt-iter-rel 1.0 x))
+        ((&lt; x 0)
+         (error "Trying to evaluate sqrt of negative number."))
+        (t 0)))
+</pre>
+</div>
+
+<pre class="example">
+SQRT-1\.1\.7-REL
+</pre>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7-rel 0.0025)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(sqrt-1.1.7-rel 1.0e20)
+</pre>
+</div>
+
+<p>
+So my way is not better, it is less accurate than the modification suggested in Exercise 1.7, but it
+does require less storage!
+However, if the solution is converging very slowly, <code>close-enoughp</code> might return a false positive.
+</p>
+</div>
+</li>
+
+<li><a id="sec-1-1-7-3" name="sec-1-1-7-3"></a>Exercise 1.8<br  /><div class="outline-text-5" id="text-1-1-7-3">
+<p>
+Newton's method applied to cube roots is given as:
+</p>
+\begin{equation}
+y^3=x \Rightarrow y_{n+1} = \frac{x/y^2_n + 2y_n}{3}
+\end{equation}
+<p>
+Use this to implement a cube-root procedure.<sup><a id="fnr.6" name="fnr.6" class="footref" href="#fn.6">6</a></sup>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp" id="cbrt">(defun cbrt-iter (guess guess-old x)
+  (if (close-enoughp guess guess-old)
+      guess
+      (cbrt-iter (improve-cbrt guess x) guess x)))
+
+(defun improve-cbrt (guess x)
+  (/ (+ (/ x (square guess))
+        (* 2 guess))
+     3))
+
+(defun cbrt (x)
+  (cbrt-iter 1.0 0.0 x))
+</pre>
+</div>
+
+<pre class="example">
+CBRT
+</pre>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(cbrt 8)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(cbrt -8)
+</pre>
+</div>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-1-1-8" class="outline-4">
+<h4 id="sec-1-1-8"><span class="section-number-4">1.1.8</span> Procedures as Black-Box Abstractions</h4>
+<div class="outline-text-4" id="text-1-1-8">
+<p>
+A key takeaway from <code>sqrt</code> is that complex problems can be broken up into a number of smaller
+problems: testing for convergence, improving the guess <i>etc</i>.
+By abstracting out each of these tasks as a procedure, we do not need to worry about how they are
+implemented and can treat them as a black box like: <code>2-&gt;square-&gt;4</code>.
+I particularly like what they say regarding this concept of breaking up programs:
+</p>
+<blockquote>
+<p>
+The importance of this decomposition strategy is not simply that one is dividing the program into
+parts.
+After all, we could take any large program and divide it into parts - the first ten lines, the next
+ten lines, the next ten lines, and so on.
+Rather, it is crucial that each procedure accomplishes an identifiable task that can be used as a
+module in defining other procedures.
+</p>
+</blockquote>
+<p>
+So while <code>square</code> is a procedure, from the perspective of <code>good-enoughp</code> it is a <i>procedural abstraction</i>
+of computing the square of a number - all we need be concerned with is that it does compute the
+square, <i>how</i> it does this is not immediately of our concern<sup><a id="fnr.7" name="fnr.7" class="footref" href="#fn.7">7</a></sup>.
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-1-1-8-1" name="sec-1-1-8-1"></a>Local names<br  /><div class="outline-text-5" id="text-1-1-8-1">
+<p>
+Vital to this ability to ignore implementation details is that the names of a procedure's formal
+parameters do not change the behaviour, for example
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun square (x)
+  (* x x))
+</pre>
+</div>
+<p>
+and
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun square (y)
+  (* y y))
+</pre>
+</div>
+<p>
+should be indistinguishable - that is, the parameter names are <i>local</i> to the body of the procedure,
+<i>i.e.</i> calling the first definition of <code>square</code> from a procedure which also defines <code>x</code>, the <code>x</code> in the
+outer procedure would be different from, and thus unaffected by the <code>x</code> in <code>square</code>.
+If the parameters were not local to the bodies of their procedures, then implementation details of
+procedures called within the outer procedure could affect the behaviour of the outer procedure - the
+inner procedure could no longer be treated as a black box.
+</p>
+
+<p>
+The formal parameters are said to be <i>bound</i> - the procedure definition is unchanged if it is
+consistently renamed.
+Alternatively a variable that is not bound is <i>free</i>.
+The expressions which define a variable are the scope of that variable, for example the body of a
+procedure is the scope of its formal parameters.
+The free variable definitions must therefore come from an enclosing scope.
+</p>
+</div>
+</li>
+
+<li><a id="sec-1-1-8-2" name="sec-1-1-8-2"></a>Internal definitions and block structure<br  /><div class="outline-text-5" id="text-1-1-8-2">
+<p>
+Formal parameters allow us to isolate names and their definition to the body of a procedure, however
+as seen in the various incarnations of <code>sqrt</code> and <code>cbrt</code> it would be good to be able to further isolate
+procedures representing common ideas, for example, <code>good-enoughp</code> or <code>improve</code> - furthermore, the user
+of <code>sqrt</code> or <code>cbrt</code> is unlikely to be concerned with these specific implementation details - for both
+these reasons it is desirable to be able to localise subprocedures.
+</p>
+
+<p>
+We can achieve this localisation using <i>block structure</i>, rewriting <code>sqrt</code> as<sup><a id="fnr.8" name="fnr.8" class="footref" href="#fn.8">8</a></sup>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sqrt-1.1.8 (x)
+  (labels ((good-enoughp (guess x)
+             (&lt; (abs (- (square guess) x)) 0.001))
+           (improve (guess x)
+             (/ (+ guess (/ x guess)) 2))
+           (sqrt-iter (guess x)
+             (if (good-enoughp guess x)
+                 guess
+                 (sqrt-iter (improve guess x) x))))
+    (sqrt-iter 1.0 x)))
+
+(sqrt-1.1.8 4)
+</pre>
+</div>
+
+<p>
+We can further improve upon this, simplifying the localised procedures, because the scope of <code>x</code> is
+local to <code>sqrt</code> we can leave it as a free variable in the local procedures, its value coming from the
+enclosing scope of <code>sqrt</code> - this is known as <i>lexical scoping</i>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sqrt-1.1.8-lex (x)
+  (labels ((good-enoughp (guess)
+             (&lt; (abs (- (square guess) x)) 0.001))
+           (improve (guess)
+             (/ (+ guess (/ x guess)) 2))
+           (sqrt-iter (guess)
+             (if (good-enoughp guess)
+                 guess
+                 (sqrt-iter (improve guess)))))
+    (sqrt-iter 1.0)))
+
+(sqrt-1.1.8-lex 9)
+</pre>
+</div>
+
+<p>
+In fact this idea could be taken further: <code>good-enoughp</code> and <code>improve</code> are both internal to <code>sqrt-iter</code>,
+<code>sqrt</code> could be rewritten as:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun sqrt-1.1.8-lex2 (x)
+  (labels ((sqrt-iter (guess)
+             (labels ((good-enoughp ()
+                        (&lt; (abs (- (square guess) x)) 0.001))
+                      (improve ()
+                        (/ (+ guess (/ x guess)) 2)))
+               (if (good-enoughp)
+                   guess
+                   (sqrt-iter (improve))))))
+    (sqrt-iter 1.0)))
+
+(sqrt-1.1.8-lex2 16)
+</pre>
+</div>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-1-1-9" class="outline-4">
+<h4 id="sec-1-1-9"><span class="section-number-4">1.1.9</span> Summary</h4>
+<div class="outline-text-4" id="text-1-1-9">
+<p>
+In this section we have seen how we can build up complex ideas from simpler blocks by abstracting
+away the details, whether that be in compound values or procedures.
+The substitution model for <code>procedure</code> evaluation was introduced: procedures are recursively expanded
+until primitive procedures which can be evaluated are obtained.
+</p>
+
+<p>
+Some key ideas:
+</p>
+<ul class="org-ul">
+<li>The order in which a <code>combination</code> is evaluated can affect the result - in practice, both <code>Scheme</code> and
+<code>Common LISP</code> use <i>applicative</i>-order whereby the argeuments are evaluated before being passed into a
+<code>procedure</code>.
+</li>
+<li>A <code>procedure</code> differs from a <code>function</code> by explaining <i>how</i> to do something, not just <i>describing</i>
+  something.
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Procedures and the Processes They Generate</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Whilst we now have knowledge of the basics: how to define variables and procedures - it is important
+to be able to reason about the <i>process</i> a procedure will generate, in particular the `shapes' of the
+resulting processes in terms of the rate at which they consume time and space.
+</p>
+</div>
+
+<div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> Linear Recursion and Iteration</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+To begin, consider the factorial, defined as
+</p>
+\begin{equation}
+n! = n \left( n - 1 \right) \left( n - 2 \right) \ldots 3 \times 2 \times 1
+\end{equation}
+
+<p>
+Perhaps the simplest way to compute the factorial is to note that \(n! = n \times \left( n - 1 \right)!\).
+Given that by definition: \(1! = 1\) and \(0! = 1\), this can be translated directly into a procedure:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun factorial (n)
+  (if (= n 1)
+      1
+      (* n (factorial (- n 1)))))
+</pre>
+</div>
+<p>
+Using the substitution model, computing \(6!\) with this procedure results in the process shown in
+<i>fig</i>. <a href="#fig:linear-recursion">2</a>.
+</p>
+
+<div id="fig:linear-recursion" class="figure">
+<p><img src="./SICP1/figures/linear-recursion.png" alt="linear-recursion.png" />
+</p>
+<p><span class="figure-number">Figure 2:</span> A linear recursive process for computing 6!.</p>
+</div>
+
+<p>
+Alternatively, \(n!\) might be computed by multiplying \(1\) by \(2\), the results by \(3\), then \(4\), and
+so on until we reach \(n\) - maintaining a running product and a counter the counts from \(1\) up to
+\(n\), when the counter exceeds \(n\), the product is equal to \(n!\).
+This gives the following procedure:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun factorial-iter (n &amp;optional (ctr 1) (prod 1))
+  (if (&gt; ctr n)
+      prod
+      (factorial-iter n (+ ctr 1) (* ctr prod))))
+</pre>
+</div>
+<p>
+the resulting process of which can again be visualised by expanding using the substitution model,
+giving the process for computing \(6!\) shown in <i>fig</i>. <a href="#fig:linear-iteration">3</a>.
+</p>
+
+<div id="fig:linear-iteration" class="figure">
+<p><img src="./SICP1/figures/linear-iteration.png" alt="linear-iteration.png" />
+</p>
+<p><span class="figure-number">Figure 3:</span> A linear iterative process for computing 6!.</p>
+</div>
+
+<p>
+Comparing the two processes it can be seen that they both compute \(n!\) with the same sequence of
+multiplications in a number of steps proportional to \(n\).
+However the `shapes' are different: the first process' `shape' expands as it builds up a chain of
+<i>deferred</i> operations and then contracts as the operations are actually performed.
+This type of process is called a <i>recursive</i> process and requires keeping track of the operations to
+be performed later on.
+In computing $n!, the length of the chain of deferred operations, and hence the amount of
+information needed to keep track of it, like the number of steps, grows linearly with \(n\) - a <i>linear
+recursive process</i>.
+In contrast, the second process has a constant width: for any \(n\) only the current values of the
+<i>state</i> variables <code>n</code>, <code>ctr</code> and <code>prod</code> must be tracked.
+This is known as an <i>iterative</i> process - in general, such a process' state can be summarised by a
+fixed number of state variables with a fixed rule describing how to update these variables from
+state to state and an (optional) end test specifying when to terminate the process.
+In the example to compute \(n!\), the number of steps grows linearly with \(n\) - a <i>linear iterative
+process</i>.
+</p>
+
+<p>
+A further interesting distinction between <i>iterative</i> and <i>recursive</i> processes is that an iterative
+process' state variables describe the state of the process entirely - it can be stopped and
+restarted given the values of the state variables.
+This is not possible in a recursive process as some of this information is `hidden' in the chain of
+deferred operations.
+</p>
+
+<p>
+Note: it is important to distinguish a recursive process from a recursive procedure.
+A recursive procedure is just the syntax: the procedure definition refers (directly or indirectly)
+to itself.
+In describing a process as being recursive it is a comment on how the process evolves, not how it is
+written.
+For example <code>factorial-iter</code> is a recursive procedure generating an iterative process - only three
+variables need be tracked to describe its state<sup><a id="fnr.9" name="fnr.9" class="footref" href="#fn.9">9</a></sup>.
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-1-2-1-1" name="sec-1-2-1-1"></a>Exercise 1.9<br  /><div class="outline-text-5" id="text-1-2-1-1">
+<p>
+Each of the following two procedures defines a method for adding two positive integers in terms of
+the procedures <code>inc</code>, which increments its argument by \(1\), and <code>dec</code>, which decrements its argument by
+\(1\).
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp">(defun +-1.9.a (a b)
+  (if (= a 0)
+      b
+      (inc (+-1.9.a (dec a) b))))
+
+(defun +-1.9.b (a b)
+  (if (= a 0)
+      b
+      (+-1.9.b (dec a) (inc b))))
+</pre>
+</div>
+
+<p>
+Using the substitution model, illustrate the process generated by each procedure in evaluating <code>(+ 4
+5)</code>.
+Are these processes iterative or recursive?
+</p>
+</div>
+</li></ol>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+N.B. though <code>SICP</code> is written in <code>Scheme</code>, I will be using <code>Common LISP</code>.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p class="footpara">
+By convention, top-level <i>variables</i> are identified by <code>*</code> <i>e.g.</i> <code>*radius*</code> while a
+<i>constant</i> such as &pi; would be defined as <code>(defconstant +PI+ 3.14159)</code> where <code>+</code> represents constants by
+convention.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p class="footpara">
+As a consequence of interactive/incremental development, <code>LISP</code> programs usually
+consist of a large number of relatively simple procedures.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.4" name="fn.4" class="footnum" href="#fnr.4">4</a></sup> <p class="footpara">
+This evaluation rule is an example of <i>tree accumulation</i>.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.5" name="fn.5" class="footnum" href="#fnr.5">5</a></sup> <p class="footpara">
+<code>Common LISP</code> uses applicative-order evaluation also.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.6" name="fn.6" class="footnum" href="#fnr.6">6</a></sup> <p class="footpara">
+A general Newton's method is implemented in section 1.3.4 as an abstraction of these
+square- and cube-root procedures.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.7" name="fn.7" class="footnum" href="#fnr.7">7</a></sup> <p class="footpara">
+In order to be able to truly ignore implementation details probably requires that
+the procedures be written in a functional style - we need to be confident that it will not mess with
+our state.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.8" name="fn.8" class="footnum" href="#fnr.8">8</a></sup> <p class="footpara">
+This is quite a bit easier in <code>Scheme</code>, in <code>Common LISP</code> <code>DEFUN</code> defines a <code>top level</code>
+<i>i.e.</i> global function - it can be used within a procedure definition but won't work as we want here -
+for this you need <code>LABELS</code> and <code>FLET</code> - these associate names with local procedure definitions, the
+difference being procedures defined using <code>LABELS</code> can be recursive and reference each other whilst
+with <code>FLET</code> they cannot.
+</p></div>
+
+<div class="footdef"><sup><a id="fn.9" name="fn.9" class="footnum" href="#fnr.9">9</a></sup> <p class="footpara">
+Depending on the compiler/interpreter as written it may still execute as a recursive
+process - <i>tall call optimisation</i> is required to ensure an iterative process is generated.
+</p></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">Author: Paul Bartholomew</p>
+<p class="date">Created: 2018-08-12 Sun 15:39</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.3.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
