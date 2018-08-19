@@ -5,6 +5,7 @@
 
 #+EXCLUDE_TAGS: no_export
 
+#+LATEX_HEADER: \hypersetup{colorlinks}
 #+LATEX_HEADER: \usepackage{fullpage}
 #+LATEX_HEADER: \usepackage{placeins}
 
