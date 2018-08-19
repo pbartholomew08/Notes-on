@@ -6,3 +6,5 @@ Notes-on is a repository of notes I have taken.
 * Programming
 
 ** Lisp
+
+*** [[./programming/lisp/sicp/SICP-Notes.org][Structure and Interpretation of Computer Programs]]

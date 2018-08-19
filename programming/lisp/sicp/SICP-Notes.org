@@ -1144,8 +1144,3 @@ g \left( n \right) &= 2^n \\
 h \left( n \right) &= 2\^{2}\ldots (n-1 times) = 2\uparrow\uparrow{}\left(n - 1\right) \\
 k \left( n \right) &= 5n^2
 \end{align}
-* Local Variables                                                 :no_export:
-
-# Local Variables:
-# after-save-hook: (lambda () (when (org-html-export-to-html) (rename-file "SICP-Notes.html" "index.html")))
-# End:
