@@ -3,7 +3,6 @@
 
 Notes-on is a repository of notes I have taken.
 
-
 * Programming
 
 ** Lisp
