@@ -3,16 +3,21 @@
 #+TITLE: SICP Notes
 #+AUTHOR: Paul Bartholomew
 
+#+OPTIONS: toc:nil
+
 #+EXCLUDE_TAGS: no_export
 
 #+LATEX_HEADER: \hypersetup{colorlinks}
 #+LATEX_HEADER: \usepackage{fullpage}
 #+LATEX_HEADER: \usepackage{placeins}
 
+#+BEGIN_ABSTRACT
 These notes are my work-through of Structure and Interpretation of Computer Programs
 (=SICP=)[fn:sch-cl].
 
 [fn:sch-cl] N.B. though =SICP= is written in =Scheme=, I will be using =Common LISP=.
+#+END_ABSTRACT
+#+TOC: headlines 3
 
 * Building Abstractions with Procedures
 
