@@ -1159,7 +1159,7 @@ sequence
     \begin{equation}
       Fib \left( n \right) =
       \begin{cases}
-        Fib \left( n - 1 \right) + Fib \left( n - 2) & n > 1 \\
+        Fib \left( n - 1 \right) + Fib \left( n - 2 \right) & n > 1 \\
           n & \mbox{otherwise}
       \end{cases}
     \end{equation}
@@ -1274,7 +1274,7 @@ A function $f$ is defined as:
 f \left( n \right) =
 \begin{cases}
 n & n < 3 \\
-f \left( n - 1 \right) + 2 f \left( n - 2) + 3 f \left( n - 3) & n \geq 3
+f \left( n - 1 \right) + 2 f \left( n - 2 \right) + 3 f \left( n - 3 \right) & n \geq 3
 \end{cases}
 \end{equation}
 write procedures that compute $f$ via recursive and iterative processes
