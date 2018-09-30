@@ -8,3 +8,4 @@ Notes-on is a repository of notes I have taken.
 ** Lisp
 
 *** [[./programming/lisp/sicp/SICP-Notes.org][Structure and Interpretation of Computer Programs]]
+*** [[./programming/lisp/pcl/PCL-Notes.org][Practical Common-Lisp]]
