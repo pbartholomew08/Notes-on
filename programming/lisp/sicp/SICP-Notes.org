@@ -1491,7 +1491,7 @@ $2$, the process has $\mathcal{O}(\log n)$ growth.
 The difference between $\mathcal{O}(\log n)$ and $\mathcal{O}(n)$ becomes striking as $n$ becomes
 large: for example, ~(fast-expt 1000)~ requires only $14$ multiplications.
 
-**** Exercise 1.16
+***** Exercise 1.16
 
 Design a procedure that evolves an iterative process for exponentiation using successive squaring
 with a logarithmic number of steps.
@@ -1502,11 +1502,29 @@ At the beginning of the process $a$ is taken to be 1, and the answer is given by
 the end of the process.
 In general, the technique of defining an /invariant quantity/ that remains unchanged from state to
 state is a powerful way to think about the design of iterative algorithms.
-#+BEGIN_SRC lisp
+#+BEGIN_SRC lisp :noweb strip-export :exports both
+  <<square>>
   (defun fast-expt (b n &optional (a 1))
     (cond ((= n 0) a)
           ((evenp n)
-           ())
-           (t ;; Case: n is odd
-            ())))
+           (fast-expt (square b) (/ n 2) a))
+          (t ;; Case: n is odd
+           (fast-expt b (- n 1) (* a b)))))
+
+  ;; Test
+  (fast-expt 2 3)
 #+END_SRC
+
+#+RESULTS:
+: 8
+
+Except in the degenerate cases when ~(evenp n)~ is ~nil~ or ~(= n 0)~, the state change
+#+BEGIN_LATEX
+  \begin{align}
+    a &\leftarrow a \\
+    b &\leftarrow b^2 \\
+    n &\leftarrow \frac{n}{2}
+  \end{align}
+#+END_LATEX
+is applied, thus the product $ab^n$ is a constant, /i.e./ it is an /invariant/ quantity.
+
