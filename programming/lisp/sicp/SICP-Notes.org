@@ -1520,11 +1520,62 @@ state is a powerful way to think about the design of iterative algorithms.
 
 Except in the degenerate cases when ~(evenp n)~ is ~nil~ or ~(= n 0)~, the state change
 #+BEGIN_LATEX
-  \begin{align}
-    a &\leftarrow a \\
-    b &\leftarrow b^2 \\
-    n &\leftarrow \frac{n}{2}
-  \end{align}
+  \begin{equation}
+    \begin{split}
+      a &\leftarrow a \\
+      b &\leftarrow b^2 \\
+      n &\leftarrow \frac{n}{2}
+    \end{split}
+  \end{equation}
 #+END_LATEX
 is applied, thus the product $ab^n$ is a constant, /i.e./ it is an /invariant/ quantity.
+
+***** Exercise 1.17
+
+The exponentiation algorithms in this section are based on performing exponentiation by means of
+repeated multiplication.
+In a similar way, one can perform integer multiplication by means of repeated addition.
+The following multiplication procedure (in which it is assumed that our language can only add, not
+multiply) is analogous to the ~expt~ procedure:
+#+BEGIN_SRC lisp :eval never
+  (defun * (a b)
+    (if (= b 0)
+        0
+        (+ a (* a (- b 1)))))
+#+END_SRC
+This algorithm takes a number of steps that is linear in ~b~.
+Now suppose we include, together with addition, operations ~double~, which doubles an integer, and
+~halve~, which divides an (even) integer by $2$.
+Using these, design a multiplication procedure analogous to ~fast-expt~ that uses a logarithmic number
+of steps.
+#+BEGIN_SRC lisp :exports both
+  (defun fast-mult (a b &optional (acc 0))
+    " Perform fast multiplication using addition only - our machine does not 
+  know the multiply operation. "
+    (cond ((= b 1)
+           a)
+          ((evenp b)
+           (fast-mult a (- b 1) (+ acc a)))
+          (t ; Case b is odd
+           (fast-expt a (- b 1) a))))
+
+  (defun sicp-double (a)
+    " Returns 2 * a.
+
+  Recall, for the purposes of this exercise, our machine can only do addition, 
+  not multiplication."
+    (+ a a))
+
+  (defun halve (a)
+    " Divides an (even) number by 2. "
+    (if (evenp a)
+        (/ a 2)
+        a))
+
+  ;; Test
+  (fast-mult 3 7)
+#+END_SRC
+
+#+RESULTS:
+: 2187
 
