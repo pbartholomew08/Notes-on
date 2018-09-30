@@ -1,0 +1,16 @@
+# -*- mode: org; org-confirm-babel-evaluate: nil -*- #
+
+#+TITLE: Practical Common-Lisp Notes
+#+AUTHOR: Paul Bartholomew
+
+#+OPTIONS: toc:nil
+
+#+EXCLUDE_TAGS: no_export
+
+#+LATEX_HEADER: \hypersetup{colorlinks}
+#+LATEX_HEADER: \usepackage{fullpage}
+#+LATEX_HEADER: \usepackage{placeins}
+
+#+BEGIN_ABSTRACT
+#+END_ABSTRACT
+#+TOC: headlines 3
