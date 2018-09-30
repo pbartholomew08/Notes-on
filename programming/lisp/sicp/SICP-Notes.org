@@ -1475,7 +1475,7 @@ $2$, the process has $\mathcal{O}(\log n)$ growth.
 The difference between $\mathcal{O}(\log n)$ and $\mathcal{O}(n)$ becomes striking as $n$ becomes
 large: for example, ~(fast-expt 1000)~ requires only $14$ multiplications.
 
-**** Exercise 1.16
+***** Exercise 1.16
 
 Design a procedure that evolves an iterative process for exponentiation using successive squaring
 with a logarithmic number of steps.
@@ -1491,13 +1491,24 @@ state is a powerful way to think about the design of iterative algorithms.
   (defun fast-expt (b n &optional (a 1))
     (cond ((= n 0) a)
           ((evenp n)
-           (fast-expt b (/ n 2) (* a (square b))))
+           (fast-expt (square b) (/ n 2) a))
           (t ;; Case: n is odd
            (fast-expt b (- n 1) (* a b)))))
 
-  (fast-expt 2 5)
+  ;; Test
+  (fast-expt 2 3)
 #+END_SRC
 
 #+RESULTS:
-: 64
+: 8
+
+Except in the degenerate cases when ~(evenp n)~ is ~nil~ or ~(= n 0)~, the state change
+#+BEGIN_LATEX
+  \begin{align}
+    a &\leftarrow a \\
+    b &\leftarrow b^2 \\
+    n &\leftarrow \frac{n}{2}
+  \end{align}
+#+END_LATEX
+is applied, thus the product $ab^n$ is a constant, /i.e./ it is an /invariant/ quantity.
 
