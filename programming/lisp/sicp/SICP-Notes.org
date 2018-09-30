@@ -363,10 +363,12 @@ Assume that the sequence is to be evaluated in the order in which it is presente
 **** Exercise 1.2
 
 Translate the following expression into prefix form
-\begin{equation}
-\frac{5 + \frac{1}{2} + \left( 2 - \left( 3 - \left( 6 + \frac{4}{5} \right) \right) \right)}{3
-\left( 6 - 2 \right) \left( 2 - 7 \right)}
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    \frac{5 + \frac{1}{2} + \left( 2 - \left( 3 - \left( 6 + \frac{4}{5} \right) \right) \right)}{3
+      \left( 6 - 2 \right) \left( 2 - 7 \right)}
+  \end{equation}
+#+END_LATEX
 
 #+BEGIN_SRC lisp
   (/ (+ 5 (/ 1 2) (- 2 3 (+ 6 (/ 4 5))))
@@ -475,21 +477,27 @@ An important distinction between a mathematical =function= and a computational =
 Essentially, a =function= is /declarative/ - it describes what something is - whilst a =procedure= is
 /imperative/ - describing how to do something.
 For example, the square-root function can be defined as:
-\begin{equation}
-\sqrt{x} = \mbox{the } y \mbox{ such that } y\geq0 \mbox{ and } y^2=x
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    \sqrt{x} = \mbox{the } y \mbox{ such that } y\geq0 \mbox{ and } y^2=x
+  \end{equation}
+#+END_LATEX
 This is not a =procedure=, it tells us nothing about /how to/ compute $y$.
 
 To develop a procedure for square roots, one approach is to use Newton's method to find the roots of
 $f(x)=0$
-\begin{equation}
-x_{n+1}=x_n-\frac{f_n}{f'_n}
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    x_{n+1}=x_n-\frac{f_n}{f'_n}
+  \end{equation}
+#+END_LATEX
 Given the definition of the square root, namely that $y^2=x$ gives $f(y)=x-y^2=0$ and the procedure to
 compute the square root is
-\begin{equation}
-y_{n+1}=y_n-\frac{x - y^2_n}{-2y_n}=\frac{y_n + \frac{x}{y_n}}{2}
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    y_{n+1}=y_n-\frac{x - y^2_n}{-2y_n}=\frac{y_n + \frac{x}{y_n}}{2}
+  \end{equation}
+#+END_LATEX
 which is evaluated until the guess $y_n$ is /good enough/.
 This procedure can be summarised as: given an initial guess, check if it is good enough, if not
 improve the guess using Newton's method and start again using the new guess, in code:
@@ -700,9 +708,11 @@ However, if the solution is converging very slowly, ~close-enoughp~ might return
 **** Exercise 1.8
 
 Newton's method applied to cube roots is given as:
-\begin{equation}
-y^3=x \Rightarrow y_{n+1} = \frac{x/y^2_n + 2y_n}{3}
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    y^3=x \Rightarrow y_{n+1} = \frac{x/y^2_n + 2y_n}{3}
+  \end{equation}
+#+END_LATEX
 Use this to implement a cube-root procedure.[fn:newton]
 
 #+NAME: cbrt
@@ -900,9 +910,11 @@ resulting processes in terms of the rate at which they consume time and space.
 *** Linear Recursion and Iteration
 
 To begin, consider the factorial, defined as
-\begin{equation}
-n! = n \left( n - 1 \right) \left( n - 2 \right) \ldots 3 \times 2 \times 1
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    n! = n \left( n - 1 \right) \left( n - 2 \right) \ldots 3 \times 2 \times 1
+  \end{equation}
+#+END_LATEX
 
 Perhaps the simplest way to compute the factorial is to note that $n! = n \times \left( n - 1 \right)!$.
 Given that by definition: $1! = 1$ and $0! = 1$, this can be translated directly into a procedure:
@@ -1144,12 +1156,14 @@ of $n$
     (* 5 n n))
 #+END_SRC
 
-\begin{align}
-f \left( n \right) &= 2n \\ 
-g \left( n \right) &= 2^n \\
-h \left( n \right) &= 2^{2}\ldots (n-1 times) = 2\uparrow\uparrow{}\left(n - 1\right) \\
-k \left( n \right) &= 5n^2
-\end{align}
+#+BEGIN_LATEX
+  \begin{align}
+    f \left( n \right) &= 2n \\ 
+    g \left( n \right) &= 2^n \\
+    h \left( n \right) &= 2^{2}\ldots (n-1 times) = 2\uparrow\uparrow{}\left(n - 1\right) \\
+    k \left( n \right) &= 5n^2
+  \end{align}
+#+END_LATEX
 
 *** Tree Recursion
 
@@ -1270,13 +1284,15 @@ into more efficient procedures that compute the same result.
 **** Exercise 1.11
 
 A function $f$ is defined as:
-\begin{equation}
-f \left( n \right) =
-\begin{cases}
-n & n < 3 \\
-f \left( n - 1 \right) + 2 f \left( n - 2 \right) + 3 f \left( n - 3 \right) & n \geq 3
-\end{cases}
-\end{equation}
+#+BEGIN_LATEX
+  \begin{equation}
+    f \left( n \right) =
+    \begin{cases}
+      n & n < 3 \\
+      f \left( n - 1 \right) + 2 f \left( n - 2 \right) + 3 f \left( n - 3 \right) & n \geq 3
+    \end{cases}
+  \end{equation}
+#+END_LATEX
 write procedures that compute $f$ via recursive and iterative processes
 
 #+BEGIN_SRC lisp
