@@ -1486,7 +1486,7 @@ At the beginning of the process $a$ is taken to be 1, and the answer is given by
 the end of the process.
 In general, the technique of defining an /invariant quantity/ that remains unchanged from state to
 state is a powerful way to think about the design of iterative algorithms.
-#+BEGIN_SRC lisp :noweb strip-export
+#+BEGIN_SRC lisp :noweb strip-export :exports both
   <<square>>
   (defun fast-expt (b n &optional (a 1))
     (cond ((= n 0) a)
@@ -1495,9 +1495,9 @@ state is a powerful way to think about the design of iterative algorithms.
           (t ;; Case: n is odd
            (fast-expt b (- n 1) (* a b)))))
 
-  (fast-expt 2 4)
+  (fast-expt 2 5)
 #+END_SRC
 
 #+RESULTS:
-: 32
+: 64
 
