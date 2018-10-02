@@ -1552,12 +1552,14 @@ of steps.
   (defun fast-mult (a b &optional (acc 0))
     " Perform fast multiplication using addition only - our machine does not 
   know the multiply operation. "
-    (cond ((= b 1)
-           a)
+    (cond ((= b 0)
+           acc)
+          ((= b 2)
+           (+ acc (sicp-double a)))
           ((evenp b)
-           (fast-mult a (- b 1) (+ acc a)))
+           (fast-mult (sicp-double a) (halve b) acc))
           (t ; Case b is odd
-           (fast-expt a (- b 1) a))))
+           (fast-mult a (- b 1) (+ acc a)))))
 
   (defun sicp-double (a)
     " Returns 2 * a.
@@ -1568,14 +1570,12 @@ of steps.
 
   (defun halve (a)
     " Divides an (even) number by 2. "
-    (if (evenp a)
-        (/ a 2)
-        a))
+    (/ a 2))
 
   ;; Test
-  (fast-mult 3 7)
+  (fast-mult 3 11)
 #+END_SRC
 
 #+RESULTS:
-: 2187
+: 33
 
