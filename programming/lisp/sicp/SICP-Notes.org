@@ -1675,3 +1675,36 @@ and a second time:
 #+RESULTS:
 : T
 
+*** Greatest Common Divisors
+
+Whilst the GCD (Greatest Common Divisor) of two integers $a$ and $b$ can be found by factoring an
+searching for common factors, a much more efficient algorithm is available.
+If $r$ is the remainder of $a/b$, then the common divisors of $a$ and $b$ are the same as those of
+$b$ and $r$, /i.e./
+#+BEGIN_LATEX
+  \begin{equation}
+    GCD \left( a, b \right) = GCD \left( b, r \right)
+  \end{equation}
+#+END_LATEX
+Therefore computing the GCD becomes a problem of computing the GCD of smaller and smaller pairs of
+integers, /e.g./
+#+BEGIN_LATEX
+  \begin{equation}
+    \begin{split}
+      GCD \left( 206, 40 \right) &= GCD \left( 40, 6 \right) \\
+      &= GCD \left( 6, 4 \right) \\
+      &= GCD \left( 4, 2 \right) \\
+      &= GCD \left( 2, 0 \right) \\
+      &= 2
+    \end{split}
+  \end{equation}
+#+END_LATEX
+This is known as /Euclid's algorithm/ and is easily expressed as a procedure:
+#+BEGIN_SRC lisp
+  (defun gcd (a b)
+    (if (= b 0)
+        a
+        (gcd b (rem a b))))
+#+END_SRC
+generating an iterative process of whose number of steps grows as the logarithm of the numbers ($a$
+and $b$) involved.
