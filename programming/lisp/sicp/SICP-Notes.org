@@ -19,3 +19,6 @@ These notes are my work-through of Structure and Interpretation of Computer Prog
 #+END_ABSTRACT
 #+TOC: headlines 3
 
+* Lecture Notes
+
+* Exercises
