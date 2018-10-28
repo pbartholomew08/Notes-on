@@ -1,11 +1,12 @@
-# -*- mode: org -*-
+# -*- mode: org; org-confirm-babel-evaluate: nil -*-
 
 #+TITLE: SICP Lecture 1
 #+AUTHOR: Paul Bartholomew
 
+#+LATEX_HEADER: \hypersetup{colorlinks}
 #+LATEX_HEADER: \usepackage{fullpage}
 
-* Lecture 1A
+* Overview: Introduction to Lisp
 
 #+BEGIN_QUOTE
 Computer science is a terrible name for this business.
@@ -15,34 +16,35 @@ physics is not really about particle accelerators and biology is not really abou
 petri dishes. -- Harold Abelson
 #+END_QUOTE
 
-Computer science is to computers as surveying is to geometry - it is a way to formalise an idea so
-with computer science it is about formalising a `process' i.e. /how to do things/.
-A process differs from `declarative knowledge' by telling you how to do something rather than
-something that is true, for example the square root can be defined as:
-#+BEGIN_LATEX
-  $\sqrt{x}$ is the $y$ such that $y^2 = x$ and $y \geq 0$.
-#+END_LATEX
-contrasted to the `imperative knowledge' of /how to/ find the square root of $x$ by successive
-averaging:
+** Introduction
+
+Computer science is to computers as gemoetry is to surveying - the former formalises an idea whilst
+the latter applies it.
+With computer science it is about formalising a `process' i.e. /how to do things/.
+A process is a form of `imperative knowledge', to be contrasted with mathematical statements which
+are `declarative knowledge' /i.e./ expressing the /what/ of some truth.
+For example the statement: $\sqrt{x}$ is the $y$ such that $y^2 = x$ and $y \geq 0$.
+describes precisely what the square root is, without informing how to compute it.
+By contrast, the `imperative knowledge' of a process concerns /how to/ find the square root of $x$,
+for example by successive averaging:
 - Make an initial guess $g$
 - Improve the guess by averaging $g$ and $x/g$
 - Keep improving the guess until it is good enough
 this is a method/process as opposed to the declarative knowledge we encountered earlier.
-
-To create a process we need a procedure.
+The description of these processes are procedures.
 
 The essence of computer science is how to formalise processes - the problem is how to control the
 complexity of large systems.
-Unlike in other areas such as designing a `million stage amplifier' - in computer science we deal
-with idealised systems - we are not constrained by the limitations of real components, in the case
-of the amplifier the thermal noise of the components would be amplified to the point of overwhelming
-the signal making it useless.
+Unlike in other areas of engineering such as the design of a `million stage amplifier', which must
+also deal with complexity, in computer science we deal with idealised systems, unconstrained by the
+limitations of real components, whereas in the case of the amplifier the thermal noise of the
+components would be amplified to the point of overwhelming the signal making it useless.
 
 One approach to dealing with complexity is `black box' abstraction - taking an idea and placing a
 box around it, for example the square root method might be represented as:
 #+BEGIN_LATEX
   \begin{equation}
-    x \rightarrow \sqrt{x} \rightarrow y
+    x \rightarrow SQRT\left(x\right) \rightarrow y
   \end{equation}
 #+END_LATEX
 where we don't need to understand/know what is happening between the arrows: simply we input $x$ and
@@ -66,41 +68,7 @@ so to find $\sqrt{x}$, find a fixed point of the function
 So a more useful abstraction might be ~fixed-point~ which returns the fixed point of a given function
 as input.
 
-Black box abstraction might be broken into a hierarchy as
-- *Primitive Objects* - supplied by the language
-  - Primitive procedures (~+~, ~-~, /etc./)
-  - Primitive data (~1~, ~a~, /etc./)
-- *Means of Combination* - how do we take those primitive things and make more complex things?
-  - Procedure composition
-  - Construction of compound data
-- *Means of Abstraction* - how do we turn those compound things into black boxes we can use to build
-  yet more complex things?
-  - Procedure definition
-  - Simple data abstraction
-- *Capturing Common Patterns* - how do we express a general method?
-  - High-order procedures
-  - Data as procedures
-
-The second topic (of the 1986 course) is how to define conventional interfaces - allowing us to
-think about the idea ~(* x (+ a1 a2))~ and how it should work for numbers, vectors, polynomials,
-signals or indeed anything for which those operations make sense.
-This topic can be broken down as
-- *Generic Operations* - things like ~+~ that have to work with all sorts of different kinds of data
-- *Large-Scale Structure and Modularity* - how do you put together large programs?
-- *Object-Oriented Programming*
-- *Operations on Aggregates* - a way of treating data as `streams' of signals.
-
-The third topic allowing the control of complexity is making new languages - this new language
-allows you to emphasise and suppress aspects of the problem.
-This approach is known as /metalinguistic abstraction/ - how you talk about new languages.
-This starts by looking at interpretation - building =Lisp= in =Lisp=.
-- *Interpretation* - ~apply-eval~
-- *Example - Logic Programming*
-- *Register Machines*
-
-** Overview: Introduction to Lisp
-
-(Section 1.1?)
+** Framework of a Computer Language
 
 A general framework for thinking about languages is:
 - What are the primitive elements - what does the language provide?
@@ -139,7 +107,8 @@ strings.
 
 *** Means of Abstraction
 
-We can abstract a combination[fn:cl-vs-scheme] by assigning it a name[fn:symbol], for example
+Given a means of combination, we want to be able to take some combination and
+abstract it by assigning it a name[fn:cl-vs-scheme], for example
 #+NAME: l1-example-var
 #+BEGIN_SRC lisp
   (defvar *a* (* 5 5))
@@ -182,7 +151,8 @@ We can combine these abstractions to generate yet more complex ones:
     (avg (sq x) (sq y)))
 #+END_SRC
 the key thing is we can now use ~sq~ /as if it were a language primitive/, in ~mean-sq~ the definition of
-~sq~ is /below the level of abstraction we are dealing with/.
+~sq~ is /below the level of abstraction we are dealing with/ - we don't have to worry about /how/ it
+works, only that it does return the square of a number.
 
 Another important language feature is case analysis, for example the absolute value of a number:
 #+BEGIN_LATEX
@@ -212,6 +182,8 @@ A simpler procedure definition would be:
         x))
 #+END_SRC
 we have reduced 3 predicate tests to 1.
+
+*** Example: A Procedure to Compute Square Roots
 
 Returning to the square root, we can now look at how to define a procedure for computing $\sqrt{x}$
 using successive averaging:
@@ -263,15 +235,13 @@ We can /package/ these symbols within ~my-sqrt~:
 #+RESULTS:
 : MY-SQRT
 
-This style of coding is known as /block-structure/.
+This style of coding - packaging internal details within a definition - is known as /block-structure/.
 
 [fn:cl-vs-scheme] Here there is a distinction between =Common Lisp= and =Scheme=: as a =Lisp-1=, =Scheme=
 makes no difference between variable and function definitions, using ~define~ for both; whilst =Common
 Lisp= as a =Lisp-2= does, using ~defvar~ and ~defun~ respectively.
 This has some important consequences such as how to pass functions as arguments and call arguments
 as functions.
-
-[fn:symbol] Really a symbol
 
 *** Summary
 
@@ -283,11 +253,9 @@ We can summarise what we've seen here by the following table
 | Primitive elements   | ~+~ ~*~ ~<~ ~=~        | ~23~, ~1.738~ |
 | Means of combination | ~()~ /composition/ |           |
 |                      | ~cond~, ~if~       |           |
-|                      | ~defvar~         |           |
 | Means of abstraction | ~defun~          |           |
+|                      | ~defvar~         |           |
 |----------------------+----------------+-----------|
 
 note that in the =Lisp= implementation ~+~, ~*~ /etc./ are probably not actually primitives but may usefully
 be treated as such.
-
-Next up: how do you get from these procedures to the processes they generate in the machine?

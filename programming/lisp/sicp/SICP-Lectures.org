@@ -1,0 +1,45 @@
+# -*- mode: org -*-
+
+#+TITLE: SICP Lecture Notes
+#+AUTHOR: Paul Bartholomew
+
+#+LATEX_HEADER: \hypersetup{colorlinks}
+#+LATEX_HEADER: \usepackage{fullpage}
+
+* Introduction
+
+These are my notes following the 1986 lecture series by Harold Abelson and Gerald Jay Sussman.
+The course is broken into three components:
+- *Black Box Abstraction*
+  How can we handle complex ideas without becoming overwhelmed?:
+  - Primitive objects
+    - Primitive procedures (~+~, ~-~, /etc./)
+    - Primitive data (~1~, ~a~, /etc./)
+  - Means of Combination - how do we take those primitive things and make more complex things?
+    - Procedure composition
+    - Construction of compound data
+  - Means of Abstraction - how do we turn those compound things into black boxes we can use to build
+    yet more complex things?
+    - Procedure definition
+    - Simple data abstraction
+  - Capturing Common Patterns - how do we express a general method?
+    - High-order procedures
+    - Data as procedures
+- *Definition of Conventional Interfaces*
+  How can we think about applying, /e.g./ the idea ~(* x (+ a1 a2))~ to not just numbers, but vectors,
+  polynomials, signals or indeed anything for which those operations make sense?:
+  - Generic Operations - things like ~+~ that have to work with all sorts of different kinds of data
+  - Large-Scale Structure and Modularity - how do you put together large programs?
+  - Object-Oriented Programming
+  - Operations on Aggregates - a way of treating data as `streams' of signals.
+- *Metalinguistic Abstraction*
+  Metalinguistic abstraction looks at how to redefine a problem in terms of a new language, thereby
+  simplifying the problem and minimising complexity.
+  This starts by looking at interpretation - building =Lisp= in =Lisp=.
+  - Interpretation - ~apply-eval~
+  - Example - Logic Programming
+  - Register Machines
+
+* Lecture 1
+
+- [[file:lectures/SICP-L1.org::*Overview:%20Introduction%20to%20Lisp][Lecture 1A - Overview: Introduction to Lisp]] 
