@@ -215,20 +215,27 @@ This is a /recursive/ definition: ~my-sqrt~ calls itself.
 
 A problem with ~my-sqrt~ is that the concepts of ~improve~ and ~good-enoughp~ are /external/ to ~my-sqrt~ and
 /specialised/ to it, preventing these symbols being used elsewhere.
-We can /package/ these symbols within ~my-sqrt~:
+We can /package/ these symbols within ~my-sqrt~:[fn:cl-labels]
 #+BEGIN_SRC lisp :noweb strip-export
   <<square>>
   <<avg>>
-  (defun my-sqrt (x)
-    (labels ((improve (guess)
-               (avg guess (/ x guess)))
-             (good-enoughp (guess)
-               (< (abs (- (sq guess) x))
-                  0.001))
-             (try (guess)
-               (if (good-enoughp guess)
-                   guess
-                   (try x (improve guess)))))
+  (defun my-sqrt (x &optional (tol 0.001))
+    (labels
+        (;; Method to improve our guess.
+         (improve (guess)
+           (avg guess (/ x guess)))
+         ;; Method to check our guess.
+         (good-enoughp (guess)
+           (< (abs (- (sq guess) x))
+              tol))
+         ;; Try our current guess,
+         ;; if not good enough try again with improved guess.
+         (try (guess)
+           (if (good-enoughp guess)
+               guess
+               (try (improve guess)))))
+
+      ;; Start with initial guess of 1.
       (try 1)))
 #+END_SRC
 
@@ -243,19 +250,24 @@ Lisp= as a =Lisp-2= does, using ~defvar~ and ~defun~ respectively.
 This has some important consequences such as how to pass functions as arguments and call arguments
 as functions.
 
-*** Summary
+[fn:cl-labels] Note the need to use ~labels~ - this is because in =Common Lisp= the ~defun~ macro creates
+a /top-level/ form.
+This is simpler in =Scheme= where once again we could simply use ~define~.
+
+** Summary
 
 We can summarise what we've seen here by the following table
 
-|----------------------+----------------+-----------|
-|                      | Procedures     | Data      |
-|----------------------+----------------+-----------|
-| Primitive elements   | ~+~ ~*~ ~<~ ~=~        | ~23~, ~1.738~ |
-| Means of combination | ~()~ /composition/ |           |
-|                      | ~cond~, ~if~       |           |
-| Means of abstraction | ~defun~          |           |
-|                      | ~defvar~         |           |
-|----------------------+----------------+-----------|
+|----------------------+-----------------------------+-----------|
+|                      | Procedures                  | Data      |
+|----------------------+-----------------------------+-----------|
+| Primitive elements   | ~+~ ~*~ ~<~ ~=~ [fn:implementation] | ~23~, ~1.738~ |
+| Means of combination | ~()~ /composition/              |           |
+|                      | ~cond~, ~if~                    |           |
+| Means of abstraction | ~defun~                       |           |
+|                      | ~defvar~                      |           |
+|----------------------+-----------------------------+-----------|
 
-note that in the =Lisp= implementation ~+~, ~*~ /etc./ are probably not actually primitives but may usefully
-be treated as such.
+
+[fn:implementation] Note that in the =Lisp= implementation ~+~, ~*~, /etc./ are probably not actually
+primitives but may usefully be treated as such.
